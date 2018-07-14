@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Title: NSNAEduApp
+Implementation-Version: 1.4.2
+Built-By: RajGanesh
+Implementation-Vendor-Id: org.nsna
+Build-Jdk: 1.8.0_60
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+
