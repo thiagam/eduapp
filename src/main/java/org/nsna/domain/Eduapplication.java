@@ -771,6 +771,17 @@ public class Eduapplication implements java.io.Serializable {
 	  
 	  public void setScholarshipLetterAttachmentId(long id) {
 	  }
+	  
+	  @Transient
+	  public long getPhotoAttachmentId() {
+		  for (EduappAttachment attachment : getEduappAttachments()){
+			  if (attachment.getDocumentCategory().equals("photo")) return attachment.getId();
+		  }
+		  return -1;
+	  }	  
+	  
+	  public void setPhotoAttachmentId(long id) {
+	  }
 
 
 }
