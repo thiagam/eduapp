@@ -1,4 +1,4 @@
-
+﻿
 <div class="col-sm-9 text-left">
 	<div class="alert alert-danger" data-ng-show="pageErrMsg">{{pageErrMsg}}</div>
 	<div class="page-header">
@@ -36,11 +36,12 @@
 								min="1987-01-01" max="2015-12-31" id="DOB" placeholder="" required >
 								-->
 							<div class="input-group date" data-provide="datepicker"
-								data-date-format="dd/mm/yyyy">
+								data-date-format="dd/mm/yyyy" data-date-end-date="-16y">
 								<input data-ng-model="appl.birthdate" type="text"
-									class="form-control" id="DOB" placeholder="dd/mm/yyyy" min="01/01/2013" required><span
+									class="form-control" id="DOB" placeholder="dd/mm/yyyy" required>
+									<span
 									class="input-group-addon"><i
-									class="glyphicon glyphicon-th"></i></span>
+									class="glyphicon glyphicon-calendar"></i></span>
 							</div>
 						</div>
 					</div>
@@ -53,13 +54,41 @@
 								<option value="M">Male</option>
 							</select>
 							<div class="alert alert-danger"
-								ng-show="eduForm.acknowledgement.$valid && eduForm.gender.$invalid">required.</div>
+								ng-show="eduForm.acknowledgement.$valid && eduForm.gender.$invalid">required.
+								</div>
 
 						</div>
 					</div>
 				</div>
-			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+					<label class="control-label" for="PHOTO">Recent Photo(Optional):</label>
+						<p class="help-block small">
+							<i>Disclaimer: Upload a recent passport size photo. Providing photos helps NSNA raise more funds which in turn will make it possible to support more students. It is optional, but if a photo is uploaded you agree that NSNA may use your picture in marketing materials, Facebook posts and fund raising activities.Not uploading a photo will not affect your application eligibility. Your application will be evaluated by the same standards as other applications submitted with a photo. </i>
+						</p>
+
+						<input type="file" data-ngf-select
+							data-ng-model="photo" name="photo"
+							data-ngf-max-size="1MB"
+							accept=".pdf,  image/gif, image/jpeg" >
+						<div data-ng-show="eduForm.photo.$error.maxSize"
+							class="alert alert-danger">
+							<strong>ERROR!</strong> File too large {{errorFiles[0].size /
+							1000000|number:1}}MB: max 1M
+						</div>
+						<img data-ng-show="eduForm.photo.$valid"
+							data-ngf-thumbnail="photo" class="img-thumbnail"
+							width="150" height="150">
+						<button data-ng-click="photo = null"
+							data-ng-show="photo" class="btn">Remove</button>
+
+					</div>
+				</div>
+			</div>			
 		</div>
+	</div>
+		
  
 		<div class="panel panel-success">
 			<div class="panel-heading">Family Info</div>
@@ -574,35 +603,6 @@
 			</div>
 		</div>
 		
-				<div class="panel panel-success">
-			<div class="panel-heading">Photo (optional)</div>
-			<div class="panel-body">
-				<div class="col-sm-12">
-					<div class="form-group">
-						<p class="help-block">
-							<i>Disclaimer Text: Uploading photo is optional. Your photo may be used in NSNA fund raising material.</i>
-						</p>
-
-						<input type="file" data-ngf-select
-							data-ng-model="photo" name="photo"
-							data-ngf-max-size="1MB"
-							accept=".pdf,  image/gif, image/jpeg" >
-						<div data-ng-show="eduForm.photo.$error.maxSize"
-							class="alert alert-danger">
-							<strong>ERROR!</strong> File too large {{errorFiles[0].size /
-							1000000|number:1}}MB: max 1M
-						</div>
-						<img data-ng-show="eduForm.photo.$valid"
-							data-ngf-thumbnail="photo" class="img-thumbnail"
-							width="80" height="100">
-						<button data-ng-click="photo = null"
-							data-ng-show="photo" class="btn">Remove</button>
-
-					</div>
-				</div>
-
-			</div>
-		</div>
 		
 		
 		<div class="panel panel-success">
@@ -688,7 +688,7 @@
 				<div class="col-sm-4">
 					<div class="form-group">
 						<label class="control-label" for="annualFamilyIncome">Annual
-							Family Income (₹.)*:</label> <input
+							Family Income (/.)*:</label> <input
 							data-ng-model="appl.annualFamilyIncome" type="number" min="0"
 							max="1000000" class="form-control" id="annualFamilyIncome"
 							placeholder="" required>

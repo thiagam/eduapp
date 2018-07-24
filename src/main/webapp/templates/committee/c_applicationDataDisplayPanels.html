@@ -84,11 +84,11 @@
 					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.scholarshipLetterAttachmentId)"
 					class="btn btn-sm btn-primary">Scholarship Letter</button>
 					
-					<button
-					data-ng-show="$ctrl.displayAppl.photoId != -1"
-					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.photoAttachmentId)"
-					class="btn btn-sm btn-primary">Photo</button>
-
+				<button data-ng-show="$ctrl.displayAppl.photoAttachmentId != -1"
+					 data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.photoAttachmentId)" 
+					 class="btn btn-sm btn-primary">Photo</button>
+					 
+			 
 			</div>
 			
 		</div>
