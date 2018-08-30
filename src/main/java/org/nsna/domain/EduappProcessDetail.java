@@ -1,3 +1,4 @@
+
 package org.nsna.domain;
 
 import java.math.BigDecimal;
