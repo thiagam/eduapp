@@ -36,7 +36,7 @@
 								min="1987-01-01" max="2015-12-31" id="DOB" placeholder="" required >
 								-->
 							<div class="input-group date" data-provide="datepicker"
-								data-date-format="dd/mm/yyyy" data-date-end-date="-14y" data-date-start-date="-30y">
+								data-date-format="dd/mm/yyyy" data-date-end-date="-16y">
 								<input data-ng-model="appl.birthdate" type="text"
 									class="form-control" id="DOB" placeholder="dd/mm/yyyy" required>
 									<span
@@ -63,7 +63,7 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group">
-					<label class="control-label" for="PHOTO">Recent Photo:</label>
+					<label class="control-label" for="PHOTO">Recent Photo(Optional):</label>
 						<p class="help-block small">
 							<i>Disclaimer: Upload a recent passport size photo. Providing photos helps NSNA raise more funds which in turn will make it possible to support more students. It is optional, but if a photo is uploaded you agree that NSNA may use your picture in marketing materials, Facebook posts and fund raising activities.Not uploading a photo will not affect your application eligibility. Your application will be evaluated by the same standards as other applications submitted with a photo. </i>
 						</p>
@@ -162,8 +162,8 @@
 							<label class="control-label" for="stillStudying">How many
 								Brothers and Sisters are still Studying*:</label> <input
 								data-ng-model="appl.siblingsInSchool" type="number" min="0"
-								max="9" class="form-control" id="stillStudying" placeholder="" required
-								data-custom-validation-error="appl.siblingsInSchool > appl.brothersCount + appl.sistersCount ? 'Number of siblings in school is greater than number of brothers and sisters' : ''">
+								max="9" class="form-control" id="stillStudying" placeholder=""
+								required>
 						</div>
 					</div>
 				</div>
@@ -392,7 +392,7 @@
 					<div class="col-sm-3">
 						<div class="form-group">
 							<label class="control-label" for="phone">Phone No*:</label> <input
-								data-ng-model="appl.phone1" type="tel" minlength="8" maxlength="13"
+								data-ng-model="appl.phone1" type="tel" maxlength="13"
 								class="form-control" id="phone" placeholder="" required>
 						</div>
 					</div>

@@ -82,7 +82,7 @@ public class EduApplicationController {
 			}
 		}
 		// session.setAttribute("userName", principal.getName());
-		System.out.println(request.getRemoteAddr());
+		//System.out.println(request.getRemoteAddr());
 
 	
 		return app;
@@ -91,7 +91,7 @@ public class EduApplicationController {
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/public/submitWithFile", method = RequestMethod.POST, consumes = { "multipart/form-data" })
 	public void submitWithFile(Principal principal, HttpServletRequest request,
-			@RequestPart(value = "photo",required = false) MultipartFile photo,			
+			@RequestPart(value = "photo") MultipartFile photo,
 			@RequestPart(value = "markSheet1") MultipartFile markSheet1,
 			@RequestPart(value = "markSheet2", required = false) MultipartFile markSheet2,
 			@RequestPart(value = "tuitionReceipt1") MultipartFile tuitionReceipt1,
@@ -153,9 +153,7 @@ public class EduApplicationController {
 		if (photo != null) {
 			addAttachment(application, photo, "photo");
 		}
-		
 		addAttachment(application, markSheet1, "markSheet1");
-		
 		if (markSheet2 != null) {
 			addAttachment(application, markSheet2, "markSheet2");
 		}
