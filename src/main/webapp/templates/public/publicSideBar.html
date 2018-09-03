@@ -207,7 +207,7 @@
 								</div>
 							</div>
 							<div class="col-sm-12">
-							Forgot your Student-ID? Send an email to nsnaedu@achi.org with your name, date of birth and email address.
+							Forgot your Student-ID? Send an email to <strong>nsna.edu@achi.org</strong> with your Name, Date of birth, Degree and College year when you last received scholarship from NSNA.
 							</div>
 							
 						</div>
@@ -219,16 +219,18 @@
 						data-ng-click="NewAppInputForm.$valid"
 						ui-sref="scholarshipApp.application({oldStudent: oldStudent, studentId: studentId2, birthDate: birthDate2 })">Continue</a>
 						-->
+				<div class="col-sm-1">
+					<button type="button"
+							class="btn btn-warning"
+							data-dismiss="modal"
+						 >Close </button>
+				</div>
+				<div class="col-sm-11">		 
 					<button type="button"
 						data-ui-sref="scholarshipApp.application({oldStudent: oldStudent, studentId: studentId2, birthDate: birthDate2})"
 						class="btn btn-success"
 						data-ng-disabled="NewAppInputForm.$invalid" data-dismiss="modal">Continue</button>
-						
-						
-						<button type="button"
-							class="btn btn-success"
-							data-dismiss="modal"
-						 >Close </button>
+						</div>
 				</div>
 			</form>
 
