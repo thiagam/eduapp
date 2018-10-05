@@ -81,6 +81,12 @@ public class EduappProcessDetail implements java.io.Serializable {
 	private String pBranchAddressLine2;
 	private String pBranchAddressLine3;
 	private Character useSwift;
+	private Short reviewerPrefSB;
+	private Short reviewerPrefSP;
+	private Short reviewerPrefBL;
+	private Short reviewerPrefAC;
+	private Short reviewerPrefSS;
+	private Short reviewerPrefGP;
 	
 	public EduappProcessDetail() {
 	}
@@ -99,7 +105,8 @@ public class EduappProcessDetail implements java.io.Serializable {
 			Date upTs, 	String pBeneficiaryName, String pBeneficiaryAddressLine1, String pBeneficiaryAddressLine2,
 			String pBeneficiaryAddressLine3, String pBeneficiaryAccountNumber, String pBankName,
 			String pBankSwiftCode, String pBranchIfscCode, String pBranchAddressLine1, String pBranchAddressLine2,
-			String pBranchAddressLine3, Character useSwift) {
+			String pBranchAddressLine3, Character useSwift, Short reviewerPrefSB, Short reviewerPrefSP, Short reviewerPrefBL,
+			Short reviewerPrefAC, Short reviewerPrefSS, Short reviewerPrefGP) {
 		this.eduapplication = eduapplication;
 		this.reviewer = reviewer;
 		this.processingStatus = processingStatus;
@@ -140,6 +147,12 @@ public class EduappProcessDetail implements java.io.Serializable {
 		this.pBranchAddressLine2 = pBranchAddressLine2;
 		this.pBranchAddressLine3 = pBranchAddressLine3;
 		this.useSwift = useSwift;
+		this.reviewerPrefSB = reviewerPrefSB;
+		this.reviewerPrefSP = reviewerPrefSP;
+		this.reviewerPrefBL = reviewerPrefBL;
+		this.reviewerPrefAC = reviewerPrefAC;
+		this.reviewerPrefSS = reviewerPrefSS;
+		this.reviewerPrefGP = reviewerPrefGP;
 	}
 	
 	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "eduapplication") )
@@ -530,7 +543,59 @@ public class EduappProcessDetail implements java.io.Serializable {
 		this.useSwift = useSwift;
 	}
 	
+	@Column(name = "REVIEWER_PREF_SB")
+	public Short getReviewerPrefSB() {
+		return this.reviewerPrefSB;
+	}
+
+	public void setReviewerPrefSB(Short reviewerPrefSB) {
+		this.reviewerPrefSB = reviewerPrefSB;
+	}
 	
+	@Column(name = "REVIEWER_PREF_SP")
+	public Short getReviewerPrefSP() {
+		return this.reviewerPrefSP;
+	}
+
+	public void setReviewerPrefSP(Short reviewerPrefSP) {
+		this.reviewerPrefSP = reviewerPrefSP;
+	}
+	
+	@Column(name = "REVIEWER_PREF_BL")
+	public Short getReviewerPrefBL() {
+		return this.reviewerPrefBL;
+	}
+
+	public void setReviewerPrefBL(Short reviewerPrefBL) {
+		this.reviewerPrefBL = reviewerPrefBL;
+	}
+	
+	@Column(name = "REVIEWER_PREF_AC")
+	public Short getReviewerPrefAC() {
+		return this.reviewerPrefAC;
+	}
+
+	public void setReviewerPrefAC(Short reviewerPrefAC) {
+		this.reviewerPrefAC = reviewerPrefAC;
+	}
+	
+	@Column(name = "REVIEWER_PREF_SS")
+	public Short getReviewerPrefSS() {
+		return this.reviewerPrefSS;
+	}
+
+	public void setReviewerPrefSS(Short reviewerPrefSS) {
+		this.reviewerPrefSS = reviewerPrefSS;
+	}
+	
+	@Column(name = "REVIEWER_PREF_GP")
+	public Short getReviewerPrefGP() {
+		return this.reviewerPrefGP;
+	}
+
+	public void setReviewerPrefGP(Short reviewerPrefGP) {
+		this.reviewerPrefGP = reviewerPrefGP;
+	}
 	
 	@PrePersist
 	void createdAt() {

@@ -4,36 +4,79 @@
 
 		<div class="col-sm-12 text-left">
 			<strong> {{ $ctrl.displayAppl.degree + ' - ' +
-				$ctrl.displayAppl.collegeYear + ' Year' + ' - ' + $ctrl.displayAppl.specialization}}<br />
+				$ctrl.displayAppl.collegeYear + ' Year' + ' - ' + $ctrl.displayAppl.specialization}}
 				{{$ctrl.displayAppl.institutionName }}, {{$ctrl.displayAppl.institutionCity}}  - 
-				 {{$ctrl.displayAppl.universityName}}
+				 {{$ctrl.displayAppl.universityName}}<br />
 			</strong>
 		</div>
-
-		<div class="col-sm-11 text-left">
-			<div class="row">
-				<div class="col-sm-6">Recent Aggregate:</div>
-				<div class="col-sm-5">
+		<br />
+		<br />
+		<div class="col-sm-12 text-left">
+			<div class="row row-eq-height">
+				<div class="col-sm-5">Recent Aggregate:</div>
+				<div class="col-sm-3">
 					<strong> {{ $ctrl.displayAppl.recentAggregatePercent }}% </strong> in {{
 					$ctrl.displayAppl.recentAggregatein }}
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-6">Annual Family Income:</div>
-				<div class="col-sm-5">
+				<div class="col-sm-4">
+				<button type="button"
+					data-ng-show="$ctrl.displayAppl.marksheet2AttachmentId != -1"
+					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.marksheet2AttachmentId)"
+					class="btn btn-sm btn-primary">Marks #2</button>	
+					
+				<button type="button"
+					data-ng-show="$ctrl.displayAppl.marksheet1AttachmentId != -1"
+					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.marksheet1AttachmentId)"
+					class="btn btn-sm btn-primary">Marks</button>
+					
+
+				</div> 
+			</div> 
+			<div class="row row-eq-height">
+				<div class="col-sm-5">Annual Family Income:</div>
+				<div class="col-sm-3">
 					<strong>(₹.) {{$ctrl.displayAppl.annualFamilyIncome}}.00 </strong>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-6">Annual Tuition Fee:</div>
-				<div class="col-sm-5">
-					<strong>(₹.) {{$ctrl.displayAppl.annualTuitionFee}}.00 </strong>
+				<div class="col-sm-4">		
+				<button data-ng-show="$ctrl.displayAppl.incomeProofAttachmentId != -1"
+					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.incomeProofAttachmentId)"
+					class="btn btn-sm btn-primary">Income Proof</button>
 				</div>
 			</div>
-			<br /> 
-			<div class="row">
-				<div class="col-sm-6">US Reference:</div>
-				<div class="col-sm-5">
+			<div class="row row-eq-height">
+				<div class="col-sm-5">Annual Tuition Fee:</div>
+				<div class="col-sm-3">
+					<strong>(₹.) {{$ctrl.displayAppl.annualTuitionFee}}.00 </strong>
+				</div>
+				<div class="col-sm-4">
+					
+					<button data-ng-show="$ctrl.displayAppl.tuitionReceipt2AttachmentId != -1"
+						data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.tuitionReceipt2AttachmentId)"
+						class="btn btn-sm btn-primary">Fee Rcpt#2</button>
+						
+					<button data-ng-show="$ctrl.displayAppl.tuitionReceipt1AttachmentId != -1"
+						data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.tuitionReceipt1AttachmentId)"
+						class="btn btn-sm btn-primary">Fee Rcpt</button>
+					
+				</div>
+			</div>
+		<div class="row row-eq-height">
+			<div class="col-sm-5">Supporting docs:</div>
+			<div class="col-sm-7">
+				<button data-ng-show="$ctrl.displayAppl.nagaratharProofAttachmentId != -1"
+					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.nagaratharProofAttachmentId)"
+					class="btn btn-sm btn-primary">NagaratharCertification</button>
+
+				<button
+					data-ng-show="$ctrl.displayAppl.scholarshipLetterAttachmentId != -1"
+					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.scholarshipLetterAttachmentId)"
+					class="btn btn-sm btn-primary">Scholarship Letter</button>
+
+			</div>
+		</div>
+	 <br />
+			<div class="row row-eq-height">
+				<div class="col-sm-12">US Reference:
 					<strong>
 						<div ng-if=$ctrl.displayAppl.referenceName>
 							{{$ctrl.displayAppl.referenceName + ' / ' +
@@ -41,6 +84,7 @@
 					</strong>
 				</div>
 			</div>
+		<br /> 
 			<div class="row">
 				<div class="col-sm-12">
 					Account Holder Name (if approved): <strong>
@@ -49,48 +93,8 @@
 			</div>
 			
 			<br />
-			<div class="row">
-				<button type="button"
-					data-ng-show="$ctrl.displayAppl.marksheet1AttachmentId != -1"
-					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.marksheet1AttachmentId)"
-					class="btn btn-sm btn-primary">Marks</button>
-					
-				<button type="button"
-					data-ng-show="$ctrl.displayAppl.marksheet2AttachmentId != -1"
-					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.marksheet2AttachmentId)"
-					class="btn btn-sm btn-primary">Marks#2</button>					
 
-				<button data-ng-show="$ctrl.displayAppl.incomeProofAttachmentId != -1"
-					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.incomeProofAttachmentId)"
-					class="btn btn-sm btn-primary">Income Proof</button>
-
-				<button data-ng-show="$ctrl.displayAppl.tuitionReceipt1AttachmentId != -1"
-					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.tuitionReceipt1AttachmentId)"
-					class="btn btn-sm btn-primary">Tuition Rcpt</button>
-					
-				<button data-ng-show="$ctrl.displayAppl.tuitionReceipt2AttachmentId != -1"
-					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.tuitionReceipt2AttachmentId)"
-					class="btn btn-sm btn-primary">Tuition Rcpt#2</button>					
-
-			</div>
-			<br />
-			<div class="row">
-				<button data-ng-show="$ctrl.displayAppl.nagaratharProofAttachmentId != -1"
-					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.nagaratharProofAttachmentId)"
-					class="btn btn-sm btn-primary">Nagarathar Certification</button>
-
-				<button
-					data-ng-show="$ctrl.displayAppl.scholarshipLetterAttachmentId != -1"
-					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.scholarshipLetterAttachmentId)"
-					class="btn btn-sm btn-primary">Scholarship Letter</button>
-					
-				<button data-ng-show="$ctrl.displayAppl.photoAttachmentId != -1"
-					 data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.photoAttachmentId)" 
-					 class="btn btn-sm btn-primary">Photo</button>
-					 
-			 
-			</div>
-			
+						
 		</div>
 
 	</div>
@@ -104,6 +108,9 @@
 			<strong>{{ $ctrl.displayAppl.firstName + ' ' +
 				$ctrl.displayAppl.lastName +' - ' + $ctrl.displayAppl.gender + ' - '}} </strong>
 				<strong> {{$ctrl.displayAppl.birthdate }}</strong>
+			<button data-ng-show="$ctrl.displayAppl.photoAttachmentId != -1"
+					 data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.photoAttachmentId)" 
+					 class="btn btn-sm btn-primary pull-right">Photo</button>
 		</div>
 		<div class="col-sm-12 text-left">
 			
@@ -151,7 +158,6 @@
 				</address>
 			</div>
 		</div>
-
 	</div>
 </div>
 
