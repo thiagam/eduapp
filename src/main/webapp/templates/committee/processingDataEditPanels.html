@@ -262,7 +262,10 @@
 		<div class="col-sm-7">
 			<input data-ng-model="appl.eduappProcessDetail.pBeneficiaryName"
 				   type="text" maxlength="35" class="form-control"
-				   id="pBeneficiaryName" name="pBeneficiaryName">
+				   id="pBeneficiaryName" name="pBeneficiaryName"
+				   data-ng-required="appl.eduappProcessDetail.reviewComplete=='Y' && appl.eduappProcessDetail.reviewerReject!='Y'"> 
+								<div class="alert alert-danger"
+									 data-ng-show="!reviewerDataForm.pBeneficiaryName.$valid">Required/Invalid!</div>
 		</div>
 
 		<div class="col-sm-5">
@@ -272,7 +275,10 @@
 		<div class="col-sm-7">
 			<input data-ng-model="appl.eduappProcessDetail.pBankName"
 				   type="text" maxlength="35" class="form-control"
-				   id="pBankName" name="pBankName">
+				   id="pBankName" name="pBankName"
+				   data-ng-required="appl.eduappProcessDetail.reviewComplete=='Y' && appl.eduappProcessDetail.reviewerReject!='Y'"> 
+								<div class="alert alert-danger"
+									 data-ng-show="!reviewerDataForm.pBankName.$valid">Required/Invalid!</div>
 		</div>
 		
 		<div class="col-sm-5">
@@ -282,7 +288,10 @@
 		<div class="col-sm-7">
 			<input data-ng-model="appl.branchName"
 				   type="text" maxlength="35" class="form-control"
-				   id="branchName" name="branchName">
+				   id="branchName" name="branchName"
+				   data-ng-required="appl.eduappProcessDetail.reviewComplete=='Y' && appl.eduappProcessDetail.reviewerReject!='Y'"> 
+								<div class="alert alert-danger"
+									 data-ng-show="!reviewerDataForm.branchName.$valid">Required/Invalid!</div>
 		</div>
 
 		<div class="col-sm-5">
@@ -292,18 +301,24 @@
 		<div class="col-sm-7">
 			<input data-ng-model="appl.eduappProcessDetail.pBeneficiaryAccountNumber"
 				   type="text" maxlength="35" class="form-control"
-				   id="pBeneficiaryAccountNumber" name="pBeneficiaryAccountNumber">
+				   id="pBeneficiaryAccountNumber" name="pBeneficiaryAccountNumber"
+				   data-ng-required="appl.eduappProcessDetail.reviewComplete=='Y' && appl.eduappProcessDetail.reviewerReject!='Y'"> 
+								<div class="alert alert-danger"
+									 data-ng-show="!reviewerDataForm.pBeneficiaryAccountNumber.$valid">Required/Invalid!</div>
 		</div>
 		
 		<div class="col-sm-5">
 			<span class="pull-left"><a href="https://ifsc.bankifsccode.com/{{appl.eduappProcessDetail.pBranchIfscCode}}" 
-				target="_blank" title="Use this link to lookup Bank Branch Address"><label class="control-label"
-				for="pBranchIfscCode">Branch IFSC Code:</label></a></span>
+				target="_blank" title="Use this link to lookup Bank Branch Address"><label class="control-label">
+				Branch IFSC Code:</label></a></span>
 		</div>
 		<div class="col-sm-7">
 			<input data-ng-model="appl.eduappProcessDetail.pBranchIfscCode"
 				   type="text" maxlength="35" class="form-control"
-				   id="pBranchIfscCode" name="pBranchIfscCode">
+				   id="pBranchIfscCode" name="pBranchIfscCode"
+				   data-ng-required="appl.eduappProcessDetail.reviewComplete=='Y' && appl.eduappProcessDetail.reviewerReject!='Y'"> 
+								<div class="alert alert-danger"
+									 data-ng-show="!reviewerDataForm.pBranchIfscCode.$valid">Required/Invalid!</div>
 		</div>
 		<div class="col-sm-5">
 			<span class="pull-left"> <label class="control-label"
@@ -314,7 +329,9 @@
 				data-ng-model="appl.eduappProcessDetail.pBeneficiaryAddressLine1"
 				type="text" maxlength="35" class="form-control"
 				id="BeneficiaryAddrLine1" name="BeneficiaryAddrLine1"
-				required>
+				data-ng-required="appl.eduappProcessDetail.reviewComplete=='Y' && appl.eduappProcessDetail.reviewerReject!='Y'"> 
+								<div class="alert alert-danger"
+									 data-ng-show="!reviewerDataForm.BeneficiaryAddrLine1.$valid">Required/Invalid!</div>
 		</div>
 		<div class="col-sm-5">
 			<span class="pull-leftt"> <label class="control-label"
@@ -338,7 +355,9 @@
 				data-ng-model="appl.eduappProcessDetail.pBeneficiaryAddressLine3"
 				type="text" maxlength="35" class="form-control"
 				id="BeneficiaryAddrLine3" name="BeneficiaryAddrLine3"
-				required>
+				data-ng-required="appl.eduappProcessDetail.reviewComplete=='Y' && appl.eduappProcessDetail.reviewerReject!='Y'"> 
+			<div class="alert alert-danger"
+				data-ng-show="!reviewerDataForm.BeneficiaryAddrLine3.$valid">Required/Invalid!</div>
 		</div>
 
 							
@@ -354,17 +373,19 @@
 			data-ng_show="appl.eduappProcessDetail.useSwift=='Y'">
 			<div class="col-sm-5">
 				<span class="pull-left"> <label class="control-label"
-					for="swiftCode">Swift Code:</label></span>
+					for="pBankSwiftCode">Swift Code:</label></span>
 			</div>
 			<div class="col-sm-7">
 				<input data-ng-model="appl.eduappProcessDetail.pBankSwiftCode"
-					type="text" maxlength="11" minlength="8" class="form-control"
-					id="bankSwiftCode"
+					type="text" maxlength="11"  class="form-control"
+					id="pBankSwiftCode" name="pBankSwiftCode"
 					title="First 4 match IFSC Code, 5-6: IN, 7-8: BB, 3 char Branch Code"
-					data-custom-validation-error="(appl.eduappProcessDetail.pBankSwiftCode).length > 0 && ((appl.eduappProcessDetail.pBankSwiftCode).substr(0,4) != (appl.eduappProcessDetail.pBranchIfscCode).substr(0,4) ||
+					data-custom-validation-error="(appl.eduappProcessDetail.pBankSwiftCode).length > 0 && ((appl.eduappProcessDetail.pBankSwiftCode).toUpperCase().substr(0,4) != (appl.eduappProcessDetail.pBranchIfscCode).toUpperCase().substr(0,4) ||
 						(appl.eduappProcessDetail.pBankSwiftCode).toUpperCase().substr(4,4) != 'INBB') ? 
 						'Length 8 or 11 char. First 4 chars of Swift Code should match first 4 chars of IFSC Code. 5-6: IN, 7-8: BB, 3 char Branch Code' : ''"
-					data-ng-required="appl.eduappProcessDetail.useSwift=='Y'">
+					data-ng-required="appl.eduappProcessDetail.useSwift=='N' && appl.eduappProcessDetail.reviewComplete=='Y' && appl.eduappProcessDetail.reviewerReject!='Y'"> 
+					<div class="alert alert-danger"
+						data-ng-show="!reviewerDataForm.pBankSwiftCode.$valid">Required/Invalid!</div>
 			</div>
 		</div>
 		
@@ -379,7 +400,9 @@
 					<input data-ng-model="appl.eduappProcessDetail.pBranchAddressLine1"
 						type="text" maxlength="35" class="form-control"
 						id="addrLine1" name="addrLine1"
-						data-ng-required="appl.eduappProcessDetail.useSwift=='N'">
+						data-ng-required="appl.eduappProcessDetail.useSwift=='N' && appl.eduappProcessDetail.reviewComplete=='Y' && appl.eduappProcessDetail.reviewerReject!='Y'"> 
+								<div class="alert alert-danger"
+									 data-ng-show="!reviewerDataForm.addrLine1.$valid">Required/Invalid!</div>
 				</div>
 			</div>
 			<div class="row">
@@ -402,7 +425,9 @@
 					<input data-ng-model="appl.eduappProcessDetail.pBranchAddressLine3"
 						type="text" maxlength="35" class="form-control"
 						id="addrLine3" name="addrLine3"
-						data-ng-required="appl.eduappProcessDetail.useSwift=='N'">
+						data-ng-required="appl.eduappProcessDetail.useSwift=='N' && appl.eduappProcessDetail.reviewComplete=='Y' && appl.eduappProcessDetail.reviewerReject!='Y'"> 
+								<div class="alert alert-danger"
+									 data-ng-show="!reviewerDataForm.addrLine3.$valid">Required/Invalid!</div>
 				</div>
 			</div>
 		</div>
