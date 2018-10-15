@@ -224,11 +224,9 @@ eduApp.controller('EduAppMyAssignmentCtrl', [
 eduApp.controller('EduAppProcessAppCtrl', function($scope, $http, $window, $state, $stateParams) {
     // ..
     var applId = $stateParams.applId; 
-
     //$scope.state = $state.current
     //$scope.params = $stateParams; 
 	document.body.style.cursor='wait';   
-	
 	$http.get('/getActiveUsers')
 	.then(function(response) {
 		$scope.activeUsers = response.data;
@@ -239,16 +237,18 @@ eduApp.controller('EduAppProcessAppCtrl', function($scope, $http, $window, $stat
 		data = response.data;
 		$scope.appl = data[0];
 		$scope.potentialDup = data[1];
-		$scope.potentialOtherYearApps = data[2];			
+		$scope.potentialOtherYearApps = data[2];
 	}, function(error){
 		if(error.status === 401 || error.status === 403){
 			$state.go('accessDenied', {}, {location: false});
 		}
 	})
+	
 	.finally(function () {
 		document.body.style.cursor='default';
 	});
 	
+
 	// function to submit changes made to application processing detail
 	$scope.submitEduApplProcessDetail = function() {
 		pd = $scope.appl.eduappProcessDetail;
@@ -257,21 +257,35 @@ eduApp.controller('EduAppProcessAppCtrl', function($scope, $http, $window, $stat
 		if (pd.reviewComplete == 'Y') {
 			if (pd.reviewerReject != "Y") {
 				if (pd.reviewedMarkPercent == null || 
-						pd.reviewedAnnualFamilyIncome == null ||
-						pd.reviewedAnnualTutionFee == null ||
-						pd.reviewedApplCompletePercent == null ||
-						pd.reviewerPrefPercent == null) {
+					pd.reviewedAnnualFamilyIncome == null ||
+					pd.reviewedAnnualTutionFee == null ||
+					pd.pBeneficiaryName == null ||
+					pd.pBankName == null ||
+					$scope.appl.branchName == null ||       
+					pd.pBeneficiaryAccountNumber == null ||
+					pd.pBranchIfscCode == null ||
+					pd.pBeneficiaryAddressLine1 == null ||
+					pd.pBeneficiaryAddressLine3 == null
+						) {
 					message = 'Complete all required fields with valid data.'
 				}
-			}
-			if ((pd.useSwift == 'Y' && pd.pBankSwiftCode == null) ||
-				(pd.useSwift != 'Y' && (pd.pBranchAddressLine1 == null ||
-									pd.pBranchAddressLine3 == null))){
-				message = message + '\n' + 'Bank Details Incomplete.'
-			}
+				if (pd.useSwift == 'Y' && pd.pBankSwiftCode == null)
+					{
+					message = message + '\n' + 'Bank Swiftcode is empty.'
+					}
+				else if (pd.useSwift == 'Y' && (pd.pBankSwiftCode.toUpperCase().substr(0,4)!= pd.pBranchIfscCode.toUpperCase().substr(0,4) ||
+										        pd.pBankSwiftCode.toUpperCase().substr(4,4) != 'INBB'))	
+						{
+						message = message + '\n' + 'Bank Swift code length must be 8 or 11 char. First 4 chars of Swift Code should match first 4 chars of IFSC Code. 5-6: IN, 7-8: BB, followed by 3 char Branch Code'
+						}
+				else if (pd.useSwift != 'Y' && (pd.pBranchAddressLine1 == null ||
+												pd.pBranchAddressLine3 == null))
+						{
+				message = message + '\n' + 'Branch Address required when Bank Swift code is not available.'
+				}
 			//message = 'Recent Aggregate % required. ';
 			//message = message + 'Annual Family Income required. ';
-			
+			}
 			if (message != "") {
 				$window.alert(message);
 				$window.alert('Changes not Saved');

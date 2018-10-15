@@ -290,7 +290,7 @@ public class EduProcessingController {
 						+ "and Scholarship awards for candidates will be notified by Jan " + nextYear + ".";
 				break;
 			case "Rejected":
-				statusData.statusMsg = "Thank you  for applying to the NSNA Education Assistance program. We are sorry to inform you that your application has not been selected for a scholarship at this time. We encourage you to apply again next year. All the best. Use nsnaedu@achi.org for all of your correspondence.";
+				statusData.statusMsg = "Thank you  for applying to the NSNA Education Assistance program. We are sorry to inform you that your application has not been selected for a scholarship at this time. We encourage you to apply again next year. All the best. Use nsna.edu@achi.org for all of your correspondence.";
 				break;
 			case "ReviewComplete":
 				statusData.statusMsg = "Application Review InProgress: The application is being reviewed by the Selection Committee and the final selection list will be made by Jan 15th. Scholarship awards for candidates will be notified by Jan " + nextYear + ".";
@@ -299,7 +299,7 @@ public class EduProcessingController {
 				statusData.statusMsg = "Application Approved: Congratulations! Your application is approved for Scholarship.";
 				break;
 			case "Awarded":
-				statusData.statusMsg = "Scholarship Awarded: Congratulations! Your scholarship award is being credited to your bank account. Please check your bank account and email us at nsnaedu@achi.org to confirm that you have received the money.";
+				statusData.statusMsg = "Scholarship Awarded: Congratulations! Your scholarship award is being credited to your bank account. Please check your bank account and email us at nsna.edu@achi.org to confirm that you have received the money.";
 				break;
 			default:
 				statusData.statusMsg = "";
@@ -307,7 +307,7 @@ public class EduProcessingController {
 			}
 		} else {
 			statusData.statusMsg = "No matching application found for this academic year. "
-					+ "Email nsnaedu@achi.org for all of your correspondence.";
+					+ "Email nsna.edu@achi.org for all of your correspondence.";
 		}
 
 		return statusData;

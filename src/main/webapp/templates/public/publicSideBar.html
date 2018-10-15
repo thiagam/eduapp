@@ -219,16 +219,16 @@
 						data-ng-click="NewAppInputForm.$valid"
 						ui-sref="scholarshipApp.application({oldStudent: oldStudent, studentId: studentId2, birthDate: birthDate2 })">Continue</a>
 						-->
-				<div class="col-sm-1">
+				<div class="col-sm-6">
 					<button type="button"
-							class="btn btn-warning"
+							class="btn btn-warning pull-left"
 							data-dismiss="modal"
 						 >Close </button>
 				</div>
-				<div class="col-sm-11">		 
+				<div class="col-sm-6">		 
 					<button type="button"
 						data-ui-sref="scholarshipApp.application({oldStudent: oldStudent, studentId: studentId2, birthDate: birthDate2})"
-						class="btn btn-success"
+						class="btn btn-success pull-right"
 						data-ng-disabled="NewAppInputForm.$invalid" data-dismiss="modal">Continue</button>
 						</div>
 				</div>
