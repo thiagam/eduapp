@@ -40,7 +40,7 @@ public interface EduappProcessDetailRepository extends JpaRepository<EduappProce
 	@Modifying
 	@Transactional
 	@Query(value = "update EDUAPP_PROCESS_DETAIL  " +
-					  "set MARK_SCORE = null, INCOME_SCORE = null, " +
+					  "set MARK_SCORE = null, INCOME_SCORE = null, HARDSHIP_SCORE=null, " +
 					   	   " REVIEWER_SCORE = null, TOTAL_SCORE = null, " +
 					   	   " RANK = null " +
 					" where EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG)) " +
@@ -53,9 +53,12 @@ public interface EduappProcessDetailRepository extends JpaRepository<EduappProce
 	@Query(value = "update EDUAPP_PROCESS_DETAIL  " +
 					  "set MARK_SCORE = (REVIEWED_MARK_PERCENT /100.0) , " +
 					  	" INCOME_SCORE = cast ((1.0- ((case when (REVIEWED_ANNUAL_FAMILY_INCOME -25000) < 0 then 0 " +
-					  		"when  (REVIEWED_ANNUAL_FAMILY_INCOME <= 360000) then REVIEWED_ANNUAL_FAMILY_INCOME - 25000 else " +
-					  			  " 360000   end) /360000.0))  as decimal(5,4)) , " +
-					  	" REVIEWER_SCORE = cast(((isNull(REVIEWER_PREF_SB, 0) + isNull(REVIEWER_PREF_SP, 0) + isNULL(REVIEWER_PREF_BL, 0)+"+
+					  		"when  (REVIEWED_ANNUAL_FAMILY_INCOME <= 360000) then REVIEWED_ANNUAL_FAMILY_INCOME - 25000 " +
+					  			  "else 360000   end) /360000.0))  as decimal(5,4)) , " +
+					  	" HARDSHIP_SCORE=cast((case when REVIEWED_ANNUAL_FAMILY_INCOME < REVIEWED_ANNUAL_TUTION_FEE then 1 " +
+					  			"when REVIEWED_ANNUAL_FAMILY_INCOME < 25000 then 1 " +
+					  	         "else ((1.0*REVIEWED_ANNUAL_TUTION_FEE)/REVIEWED_ANNUAL_FAMILY_INCOME) end) as decimal(5,4))," + 
+					  	" REVIEWER_SCORE = cast(((isNull(REVIEWER_PREF_SB, 0) + isNull(REVIEWER_PREF_SP, 0) + isNULL(REVIEWER_PREF_BL, 0) + "+
 					  			  "isNull(REVIEWER_PREF_AC, 0) + isNull(REVIEWER_PREF_SS, 0) + isNull(REVIEWER_PREF_GP,0))/6.0) as decimal(5,4)) " +
 					" where EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG)) " +
 						" AND PROCESSING_STATUS = 'ReviewComplete' " /*+
@@ -65,7 +68,7 @@ public interface EduappProcessDetailRepository extends JpaRepository<EduappProce
 	@Modifying
 	@Transactional
 	@Query(value = "update EDUAPP_PROCESS_DETAIL  " +
-					  "     set TOTAL_SCORE = (MARK_SCORE * 0.55) + (INCOME_SCORE * 0.3) + (REVIEWER_SCORE * 0.15) " +
+					  "     set TOTAL_SCORE = (MARK_SCORE * 0.45) + (HARDSHIP_SCORE * 0.2) + (INCOME_SCORE * 0.2) + (REVIEWER_SCORE * 0.15) " +
 					" where EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG)) " +
 						" AND PROCESSING_STATUS = 'ReviewComplete' " /* +
 						" AND REVIEWER_PREF_PERCENT  <= 6"*/, nativeQuery = true)
