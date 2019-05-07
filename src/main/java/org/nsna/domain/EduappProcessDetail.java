@@ -57,7 +57,7 @@ public class EduappProcessDetail implements java.io.Serializable {
 	private Character rejected;	
 	private BigDecimal markScore;
 	private BigDecimal incomeScore;
-	private BigDecimal feeScore;
+	private BigDecimal hardshipScore;
 	private BigDecimal appCompleteScore;
 	private BigDecimal reviewerScore;
 	private BigDecimal totalScore;
@@ -100,7 +100,7 @@ public class EduappProcessDetail implements java.io.Serializable {
 			Integer reviewedAnnualFamilyIncome, Integer reviewedAnnualTutionFee, Short reviewedApplCompletePercent,
 			Short reviewerPrefPercent, String reviewerPrefComment, Character exception, Character reviewerReject,
 			Character reviewComplete, String reviewerProcessingComment, Character rejected, BigDecimal markScore,
-			BigDecimal incomeScore, BigDecimal feeScore, BigDecimal appCompleteScore, BigDecimal reviewerScore,
+			BigDecimal incomeScore, BigDecimal hardshipScore, BigDecimal appCompleteScore, BigDecimal reviewerScore,
 			BigDecimal totalScore, Short rank, Integer awardAmount, String checkNumber, String fundName, Date crTs,
 			Date upTs, 	String pBeneficiaryName, String pBeneficiaryAddressLine1, String pBeneficiaryAddressLine2,
 			String pBeneficiaryAddressLine3, String pBeneficiaryAccountNumber, String pBankName,
@@ -125,7 +125,7 @@ public class EduappProcessDetail implements java.io.Serializable {
 		this.rejected = rejected;
 		this.markScore = markScore;
 		this.incomeScore = incomeScore;
-		this.feeScore = feeScore;
+		this.hardshipScore = hardshipScore;
 		this.appCompleteScore = appCompleteScore;
 		this.reviewerScore = reviewerScore;
 		this.totalScore = totalScore;
@@ -337,13 +337,13 @@ public class EduappProcessDetail implements java.io.Serializable {
 		this.incomeScore = incomeScore;
 	}
 
-	@Column(name = "FEE_SCORE", precision = 5, scale = 4)
-	public BigDecimal getFeeScore() {
-		return this.feeScore;
+	@Column(name = "HARDSHIP_SCORE", precision = 5, scale = 4)
+	public BigDecimal getHardshipScore() {
+		return this.hardshipScore;
 	}
 
-	public void setFeeScore(BigDecimal feeScore) {
-		this.feeScore = feeScore;
+	public void setHardshipScore(BigDecimal hardshipScore) {
+		this.hardshipScore = hardshipScore;
 	}
 
 	@Column(name = "APP_COMPLETE_SCORE", precision = 5, scale = 4)

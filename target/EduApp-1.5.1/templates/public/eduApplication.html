@@ -1,0 +1,962 @@
+﻿
+<div class="col-sm-9 text-left">
+	<div class="alert alert-danger" data-ng-show="pageErrMsg">{{pageErrMsg}}</div>
+	<div class="page-header">
+		<h1>NSNA Education Scholarship Application</h1>
+	</div>
+	<form role="form" class="" name="eduForm">
+		<div class="panel panel-success">
+			<div class="panel-heading">Applicant</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="firstName">First Name*:</label>
+							<input data-ng-model="appl.firstName" type="text" maxlength="20"
+								class="form-control" id="firstName"
+								placeholder="Enter First Name" autofocus required>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="lastName">Last Name*:</label> <input
+								data-ng-model="appl.lastName" type="text" maxlength="20"
+								class="form-control" id="lastName"
+								placeholder="Enter Last Name (Expansion of Initials)" required>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="control-label" for="DOB">Date of Birth*:</label>
+							<!--
+							<input
+								data-ng-model="appl.birthdate" type="date" class="form-control"
+								min="1987-01-01" max="2015-12-31" id="DOB" placeholder="" required >
+								-->
+							<div class="input-group date" data-provide="datepicker"
+								data-date-format="dd/mm/yyyy" data-date-end-date="-14y" data-date-start-date="-30y">
+								<input data-ng-model="appl.birthdate" type="text"
+									class="form-control" id="DOB" placeholder="dd/mm/yyyy" required>
+									<span
+									class="input-group-addon"><i
+									class="glyphicon glyphicon-calendar"></i></span>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-3 col-sm-offset-2">
+						<div class="form-group">
+							<label class="control-label" for="gender">Gender*:</label> <select
+								data-ng-model="appl.gender" class="form-control" id="gender"
+								name="gender" required>
+								<option value="F">Female</option>
+								<option value="M">Male</option>
+							</select>
+							<div class="alert alert-danger"
+								ng-show="eduForm.acknowledgement.$valid && eduForm.gender.$invalid">required.
+								</div>
+
+						</div>
+					</div>
+				</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+					<label class="control-label" for="PHOTO">Recent Photo:</label>
+						<p class="help-block small">
+							<i>Disclaimer: Upload a recent passport size photo. Providing photos helps NSNA raise more funds which in turn will make it possible to support more students. It is optional, but if a photo is uploaded you agree that NSNA may use your picture in marketing materials, Facebook posts and fund raising activities.Not uploading a photo will not affect your application eligibility. Your application will be evaluated by the same standards as other applications submitted with a photo. </i>
+						</p>
+
+						<input type="file" data-ngf-select
+							data-ng-model="photo" name="photo"
+							data-ngf-max-size="1MB"
+							accept=".pdf,  image/gif, image/jpeg" >
+						<div data-ng-show="eduForm.photo.$error.maxSize"
+							class="alert alert-danger">
+							<strong>ERROR!</strong> File too large {{errorFiles[0].size /
+							1000000|number:1}}MB: max 1M
+						</div>
+						<img data-ng-show="eduForm.photo.$valid"
+							data-ngf-thumbnail="photo" class="img-thumbnail"
+							width="150" height="150">
+						<button data-ng-click="photo = null"
+							data-ng-show="photo" class="btn">Remove</button>
+
+					</div>
+				</div>
+			</div>			
+		</div>
+	</div>
+		
+ 
+		<div class="panel panel-success">
+			<div class="panel-heading">Family Info</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="fatherName">Father's
+								Name*:</label> <input data-ng-model="appl.fathersName" type="text"
+								maxlength="50" class="form-control" id="fatherName"
+								placeholder="Enter Father's Name (If late indicate 'Late')"
+								required>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="mothersName">Mother's
+								Name*:</label> <input data-ng-model="appl.mothersName" type="text"
+								maxlength="50" class="form-control" id="motherName"
+								placeholder="Enter Mother's Name (If late indicate 'Late')"
+								required>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="fatherOccupation">Father's
+								Occupation*:</label> 
+							<selectize config='fatherOccupOptionsConfig' options='occupationOptions'
+								data-ng-model="appl.fatherOccupation" name="fatherOccupation" 
+								maxlength="40" required='true'></selectize>
+							<div class="alert alert-danger"
+								data-ng-show="eduForm.acknowledgement.$valid && eduForm.fatherOccupation.$invalid">required (MaxLength: 40 char).</div>
+							
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="motherOccupation">Mother's
+								Occupation*:</label> 
+							<selectize config='motherOccupOptionsConfig' options='occupationOptions'
+								data-ng-model="appl.motherOccupation" name="motherOccupation" 
+								maxlength="40" required='true'></selectize>
+							<div class="alert alert-danger"
+								data-ng-show="eduForm.acknowledgement.$valid && eduForm.motherOccupation.$invalid">required (MaxLength: 40 char).</div>
+
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label class="control-label" for="brothers">No. of
+								Brothers*:</label> <input data-ng-model="appl.brothersCount"
+								type="number" min="0" max="9" class="form-control" id="brothers"
+								placeholder="" required>
+						</div>
+					</div>
+					<div class="col-sm-3 ">
+						<div class="form-group">
+							<label class="control-label" for="sisters">No. of
+								Sisters*:</label> <input data-ng-model="appl.sistersCount" type="number"
+								min="0" max="9" class="form-control" id="sisters" placeholder=""
+								required>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="stillStudying">How many
+								Brothers and Sisters are still Studying*:</label> <input
+								data-ng-model="appl.siblingsInSchool" type="number" min="0"
+								max="9" class="form-control" id="stillStudying" placeholder="" required
+								data-custom-validation-error="appl.siblingsInSchool > appl.brothersCount + appl.sistersCount ? 'Number of siblings in school is greater than number of brothers and sisters' : ''">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="nativeVillage">Native
+								Village*:</label> <select data-ng-model="appl.nativeVillage"
+								class="form-control" id="nativeVillage" name="nativeVillage"
+								required>
+
+								<option value="A.Siruvayal (அ. சிறுவயல்)">A.Siruvayal
+									(அ. சிறுவயல்)</option>
+								<option value="A.Thekkur (அ.தெக்குர்)">A.Thekkur
+									(அ.தெக்குர்)</option>
+								<option value="Aavinipatti (ஆவினிப்பட்டி)">Aavinipatti
+									(ஆவினிப்பட்டி)</option>
+								<option value="Alagapuri N. (அழகாபுரி)">Alagapuri N.
+									(அழகாபுரி)</option>
+								<option value="Alagapuri P. (அழகாபுரி)">Alagapuri P.
+									(அழகாபுரி)</option>
+								<option value="Alavakkottai (அலவாக்கோட்டை)">Alavakkottai
+									(அலவாக்கோட்டை)</option>
+								<option value="Amaravathipudur (அமராவதிபுதூர்)">Amaravathipudur
+									(அமராவதிபுதூர்)</option>
+								<option value="Aravayal (ஆராவயல்)">Aravayal (ஆராவயல்)</option>
+								<option value="Arimalam (அரிமளம்)">Arimalam (அரிமளம்)</option>
+								<option value="Ariyakudi (அரியக்குடி)">Ariyakudi
+									(அரியக்குடி)</option>
+								<option value="Athangudi (ஆத்தங்குடி)">Athangudi
+									(ஆத்தங்குடி)</option>
+								<option
+									value="Attangudi Muthupattnam (ஆத்தங்குடி முத்துப்பட்டிணம்)">Attangudi
+									Muthupattnam (ஆத்தங்குடி முத்துப்பட்டிணம்)</option>
+								<option value="Chockalingampudur (சொக்கலிங்கம்புதூர்)">Chockalingampudur
+									(சொக்கலிங்கம்புதூர்)</option>
+								<option value="Chockanathapuram (சொக்கநாதபுரம்)">Chockanathapuram
+									(சொக்கநாதபுரம்)</option>
+								<option value="Cholapuram (சோழபுரம்)">Cholapuram
+									(சோழபுரம்)</option>
+								<option value="Devakottai (தேவகோட்டை)">Devakottai
+									(தேவகோட்டை)</option>
+								<option value="K.Lakshmipuram (க. லெட்சுமிபுரம்)">K.
+									Lakshmipuram (க. லெட்சுமிபுரம்)</option>
+								<option value="Kadiyapatti (கடியாபட்டி)">Kadiyapatti
+									(கடியாபட்டி)</option>
+								<option value="Kalayar Mangalam (காளையார் மங்களம்)">Kalayar
+									Mangalam (காளையார் மங்களம்)</option>
+								<option value="Kallal (கல்லல்)">Kallal (கல்லல்)</option>
+								<option value="Kallupatti (கல்லுப்பட்டி)">Kallupatti
+									(கல்லுப்பட்டி)</option>
+								<option value="Kanadukathan (கானாடுகாத்தான்)">Kanadukathan
+									(கானாடுகாத்தான்)</option>
+								<option value="Kandanur (கண்டனூர்)">Kandanur (கண்டனூர்)</option>
+								<option value="Kandaramanikam (கண்ட்ரமாணிக்கம்)">Kandaramanikam
+									(கண்ட்ரமாணிக்கம்)</option>
+								<option value="Kandavarayanpatti (கண்டவராயன்பட்டி)">Kandavarayanpatti
+									(கண்டவராயன்பட்டி)</option>
+								<option value="Karaikudi (காரைக்குடி)">Karaikudi
+									(காரைக்குடி)</option>
+								<option value="Karungulam (கருங்குளம்)">Karungulam
+									(கருங்குளம்)</option>
+								<option value="Kilapungkudi (கீழப்பூங்குடி)">Kilapungkudi
+									(கீழப்பூங்குடி)</option>
+								<option value="Kilasevalpatti (கீழச்சிவல்பட்டி)">Kilasevalpatti
+									(கீழச்சிவல்பட்டி)</option>
+								<option value="Kollangudi Alagapuri (கொல்லங்குடி அழகாபுரி)">Kollangudi
+									Alagapuri (கொல்லங்குடி அழகாபுரி)</option>
+								<option value="Konapet (கோனாபட்டு)">Konapet (கோனாபட்டு)</option>
+								<option value="Kopanapatti (கொப்பனாபட்டி)">Kopanapatti
+									(கொப்பனாபட்டி)</option>
+								<option value="Kothamangalam (கொத்தமங்கலம்)">Kothamangalam
+									(கொத்தமங்கலம்)</option>
+								<option value="Kottaiyur (கோட்டையூர்)">Kottaiyur
+									(கோட்டையூர்)</option>
+								<option value="Kulipirai (குழிபிறை)">Kulipirai
+									(குழிபிறை)</option>
+								<option value="Kuruvikkondanpatti (குருவிக்கொண்டான்பட்டி)">Kuruvikkondanpatti
+									(குருவிக்கொண்டான்பட்டி)</option>
+								<option value="Madagupatty (மதகுபட்டி)">Madagupatty
+									(மதகுபட்டி)</option>
+								<option value="Managiri (மணகிரி)">Managiri (மணகிரி)</option>
+								<option value="Melasivapuri (மேலைச்சிவபுரி)">Melasivapuri
+									(மேலைச்சிவபுரி)</option>
+								<option value="Mithilaipatti (மிதிலைப்பட்டி)">Mithilaipatti
+									(மிதிலைப்பட்டி)</option>
+								<option value="Muthupattinam (முத்துப்பட்டிணம்)">Muthupattinam
+									(முத்துப்பட்டிணம்)</option>
+								<option value="Myvalanpatti (மகிபாலன்பட்டி)">Myvalanpatti
+									(மகிபாலன்பட்டி)</option>
+								<option value="Nachandupatti (நச்சாந்துப்பட்டி)">Nachandupatti
+									(நச்சாந்துப்பட்டி)</option>
+								<option value="Nachiapuram (நாச்சியாபுரம்)">Nachiapuram
+									(நாச்சியாபுரம்)</option>
+								<option value="Natarajapuram (நடராஜபுரம்)">Natarajapuram
+									(நடராஜபுரம்)</option>
+								<option value="Nattarasankottai (நாட்டரசன்கோட்டை)">Nattarasankottai
+									(நாட்டரசன்கோட்டை)</option>
+								<option value="Nemathanpatti (நேகமத்தான்பட்டி)">Nemathanpatti
+									(நேகமத்தான்பட்டி)</option>
+								<option value="Nerkuppai (நெற்குப்பை)">Nerkuppai
+									(நெற்குப்பை)</option>
+								<option value="Okkur (ஒக்கூர்)">Okkur (ஒக்கூர்)</option>
+								<option value="Paganeri (பாகனேரி)">Paganeri (பாகனேரி)</option>
+								<option value="Palavankudi (பலவாங்குடி)">Palavankudi
+									(பலவாங்குடி)</option>
+								<option value="Pallathur (பள்ளத்தூர்)">Pallathur
+									(பள்ளத்தூர்)</option>
+								<option value="Panaiyapatti (பனையப்பட்டி)">Panaiyapatti
+									(பனையப்பட்டி)</option>
+								<option value="Panangudi (பனங்குடி)">Panangudi
+									(பனங்குடி)</option>
+								<option value="Pariamaruthapatti (பரியாமருதுபட்டி)">Pariamaruthapatti
+									(பரியாமருதுபட்டி)</option>
+								<option value="Pattamangalam (பட்டமங்கலம்)">Pattamangalam
+									(பட்டமங்கலம்)</option>
+								<option value="Pon Pudupatti (பொன். புதுப்பட்டி)">Pon
+									Pudupatti (பொன். புதுப்பட்டி)</option>
+								<option value="Poolankuruchi (பூலாங்குறிச்சி)">Poolankuruchi
+									(பூலாங்குறிச்சி)</option>
+								<option value="Pudhoor S. (S. புதூர்)">Pudhoor S. (S.
+									புதூர்)</option>
+								<option value="Pudupatti (புதுப்பட்டி)">Pudupatti
+									(புதுப்பட்டி)</option>
+								<option value="Puduvayal (புதுவயல்)">Puduvayal
+									(புதுவயல்)</option>
+								<option value="Ramachandrapuram (ராமச்சந்திராபுரம்)">Ramachandrapuram
+									(ராமச்சந்திராபுரம்)</option>
+								<option value="Rangiyam (ராங்கியம்)">Rangiyam
+									(ராங்கியம்)</option>
+								<option value="Rayavaram (ராயவரம்)">Rayavaram (ராயவரம்)</option>
+								<option value="Sakkandhi (சக்கன்தி)">Sakkandhi
+									(சக்கன்தி)</option>
+								<option value="Sembanur (செம்பனுர்)">Sembanur
+									(செம்பனுர்)</option>
+								<option value="Sevvoor (செவ்வூர்)">Sevvoor (செவ்வூர்)</option>
+								<option value="Shanmuganathapuram (சன்முகனதபுரம்)">Shanmuganathapuram
+									(சன்முகனதபுரம்)</option>
+								<option value="Siravayal (சிரவயல்)">Siravayal (சிரவயல்)</option>
+								<option value="Sirukoodalpatti (சிருகோடல்பட்டி)">Sirukoodalpatti
+									(சிருகோடல்பட்டி)</option>
+								<option value="Sivayogapuram (சிவயொகபுரம்)">Sivayogapuram
+									(சிவயொகபுரம்)</option>
+								<option value="Sokkanenthal (சொக்கனெந்தல்)">Sokkanenthal
+									(சொக்கனெந்தல்)</option>
+								<option value="Thanichavoorani (தனிசவூரனி)">Thanichavoorani
+									(தனிசவூரனி)</option>
+								<option value="Thenipatti (தெனிபட்டி)">Thenipatti
+									(தெனிபட்டி)</option>
+								<option value="Ulagampatti (உலகம்பட்டி)">Ulagampatti
+									(உலகம்பட்டி)</option>
+								<option value="V. Lakshmipuram (லக்ஷ்மிபுரம்)">V.
+									Lakshmipuram (லக்ஷ்மிபுரம்)</option>
+								<option value="Valayapatti (வலயபட்டி)">Valayapatti
+									(வலயபட்டி)</option>
+								<option value="Vegupatti  (வேகுபட்டி)">Vegupatti
+									(வேகுபட்டி)</option>
+								<option value="Venthanpatti (வேந்தன்பட்டி)">Venthanpatti
+									(வேந்தன்பட்டி)</option>
+								<option value="Vetriyur (வெட்றியுர்)">Vetriyur
+									(வெட்றியுர்)</option>
+								<option value="Virachillai (விராசில்லை)">Virachillai
+									(விராசில்லை)</option>
+								<option value="Viramathi (விரமதி)">Viramathi (விரமதி)</option>
+								<option value="Viswanathapuram (விஸ்வனதபுரம்)">Viswanathapuram
+									(விஸ்வனதபுரம்)</option>
+							</select>
+							<div class="alert alert-danger"
+								data-ng-show="eduForm.acknowledgement.$valid && eduForm.nativeVillage.$invalid">required.</div>
+						</div>
+					</div>
+					<div class="col-sm-offset-0 col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="kovilPirivu">Kovil
+								Pirivu*:</label> <select data-ng-model="appl.kovilPirivu"
+								class="form-control" id="kovilPirivu" name="kovilPirivu"
+								required>
+								<option value="Soorakudi">SOORAKUDI</option>
+								<option value="Illayathangudi-Okkurudaiyur">IAYATHANGUDI-Okkurudaiyur</option>
+								<option value="Illayathangudi-Arumbarkkuilaiyaaraana">IAYATHANGUDI-Arumbarkkuilaiyaaraana</option>
+								<option value="Illayathangudi-Pattinasaamiyar">IAYATHANGUDI-Pattinasaamiyar</option>
+								<option value="Illayathangudi-Perumaruthurudaiyar">IAYATHANGUDI-Perumaruthurudaiyar</option>
+								<option value="Illayathangudi-Kazhanivaasarkkudiyaar">IAYATHANGUDI-Kazhanivaasarkkudiyaar</option>
+								<option value="Illayathangudi-Sirusenthurudaiyar">IAYATHANGUDI-Sirusenthurudaiyar</option>
+								<option value="Illayathangudi-Kinginikooraidaiyar">IAYATHANGUDI-Kinginikooraidaiyar</option>
+								<option value="Illupakudi">ILLUPAKUDI</option>
+								<option value="Iraniyur">IRANIYUR</option>
+								<option value="Nemam Kovil">NEMAM KOVIL</option>
+								<option value="Pillayarpatti">PILLAYARPATTI</option>
+								<option value="Velangudi">VELANGUDI</option>
+								<option value="VairavanKovil">VAIRAVANKOVIL</option>
+								<option value="VairavanKovil-Sirukulathoorudaiyar">VAIRAVANKOVIL-Sirukulathoorudaiyar</option>
+								<option value="VairavanKovil-Kalanivasaludaiyar">VAIRAVANKOVIL-Kalanivasaludaiyar</option>
+								<option value="VairavanKovil-Maruthendhirapuramudaiyar">VAIRAVANKOVIL-Maruthendhirapuramudaiyar</option>
+								<option value="VairavanKovil-PeriyaVagupu">VAIRAVANKOVIL-PeriyaVagupu</option>
+								<option value="VairavanKovil-TheiyanaVagupu">VAIRAVANKOVIL-TheiyanaVagupu</option>
+								<option value="VairavanKovil-PillayarVagupu">VAIRAVANKOVIL-PillayarVagupu</option>
+								<option value="Mathur-Uraiyur">MATHUR-Uraiyur</option>
+								<option value="Mathur-Arumbakkur">MATHUR-Arumbakkur</option>
+								<option value="Mathur-Manalur">MATHUR-Manalur</option>
+								<option value="Mathur-Mannur">MATHUR-Mannur</option>
+								<option value="Mathur-Kannur">MATHUR-Kannur</option>
+								<option value="Mathur-Karuppu">MATHUR-Karuppu</option>
+								<option value="Mathur-Kulathur">MATHUR-Kulathur</option>
+							</select>
+							<div class="alert alert-danger"
+								data-ng-show="eduForm.acknowledgement.$valid && eduForm.kovilPirivu.$invalid">required.</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+   
+		<div class="panel panel-success">
+			<div class="panel-heading">Contact Details</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="email">Email ID*:</label> <input
+								data-ng-model="appl.email" type="email" maxlength="60"
+								class="form-control" id="email" placeholder="name@gmail.com"
+								required>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label class="control-label" for="phone">Phone No*:</label> <input
+								data-ng-model="appl.phone1" type="tel" minlength="8" maxlength="13"
+								class="form-control" id="phone" placeholder="" required>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class="checkbox">
+							<label> &nbsp&nbsp </label> <label class="control-label">
+								<input type="checkbox" data-ng-model="appl.phoneTypeMobile"
+								data-ng-true-value="'Y'" data-ng-false-value="'N'"> <span
+								class="label-field">This is a mobile Number</span></em>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-8">
+						<div class="form-group">
+							<label class="control-label" for="addrLine1">Current
+								Address*:</label> <input data-ng-model="appl.addressLine1" type="text"
+								maxlength="35" class="form-control" id="addrLine1"
+								placeholder="" required>
+						</div>
+					</div>
+					<div class="col-sm-8">
+						<div class="form-group">
+							<input data-ng-model="appl.addressLine2" type="text"
+								maxlength="50" class="form-control" id="addrLine2"
+								placeholder="">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="control-label" for="city">City*:</label>
+							<selectize config='myConfig' options='cityOptions' maxlength="28"
+								data-ng-model="appl.city" name="city" required='true'></selectize>
+							<div class="alert alert-danger"
+								data-ng-show="eduForm.acknowledgement.$valid && eduForm.city.$invalid">required (MaxLength: 28 char).</div>
+						</div>
+					</div>
+					<div class="col-sm-2 col-sm-offset-2">
+						<div class="form-group">
+							<label class="control-label" for="PIN">PIN Code*:</label> <input
+								data-ng-model="appl.pin" type="number" max="999999"
+								class="form-control" id="PIN" placeholder="" required>
+							<div class="alert alert-danger"
+								data-ng-show="eduForm.acknowledgement.$valid && eduForm.PIN.$invalid">required (Max:999999).</div>
+								
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-success">
+			<div class="panel-heading">Education Details</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-8">
+						<div class="form-group">
+							<label class="control-label" for="institutionName">Institution
+								Name*:</label> <input data-ng-model="appl.institutionName" type="text"
+								maxlength="75" class="form-control" id="institutionName"
+								placeholder="Name of the College you are studying in" required>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="control-label" for="institutionCity">Institution
+								City*:</label> <input data-ng-model="appl.institutionCity" type="text"
+								maxlength="30" class="form-control" id="institutionCity"
+								placeholder="College City" required>
+						</div>
+					</div>					
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="UniversityName">University
+								Name*:</label> 
+							<selectize config='myConfig' options='universityOptions'
+								data-ng-model="appl.universityName" name="universityName" 
+								maxlength="60" required='true'></selectize>
+							<div class="alert alert-danger"
+								data-ng-show="eduForm.acknowledgement.$valid && eduForm.universityName.$invalid">required (MaxLength: 60 char).</div>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="control-label" for="universityRegisterNmbr">University Register
+								Number:</label> <input data-ng-model="appl.universityRegisterNmbr" type="text"
+								maxlength="15" class="form-control" id="universityRegisterNmbr"
+								placeholder="Register Number" >
+						</div>
+					</div>					
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="control-label" for="degree">Degree Being
+								Pursued*</label> 
+								
+							<selectize config='degreeOptionsConfig' options='degreeOptions'
+								data-ng-model="appl.degree" name="degree" 
+								maxlength="30" required='true'></selectize>
+							<div class="alert alert-danger"
+								data-ng-show="eduForm.acknowledgement.$valid && eduForm.degree.$invalid">required (MaxLength: 30 char).</div>
+								
+				<!-- 				
+								
+								<input data-ng-model="appl.degree" type="text"
+								maxlength="30" class="form-control" id="degree" name="degree"
+								placeholder="eg. BE, BTech, MBBS, BSc, BCom, MBA etc" required>
+				 -->
+						</div>
+					</div>
+					<div class="col-sm-2">
+						<div class="form-group">
+							<label class="control-label" for="collegeYear">College
+								Year*:</label> <select data-ng-model="appl.collegeYear"
+								class="form-control" id="collegeYear" name="collegeYear"
+								required>
+								<option value="I">I</option>
+								<option value="II">II</option>
+								<option value="III">III</option>
+								<option value="IV">IV</option>
+								<option value="V">V</option>
+							</select>
+							<div class="alert alert-danger"
+								data-ng-show="eduForm.acknowledgement.$valid && eduForm.collegeYear.$invalid">required.</div>
+						</div>
+					</div>					
+					<div class="col-sm-5 ">
+						<div class="form-group">
+							<label class="control-label" for="specialization">Specialization*:</label>
+							<selectize config='myConfig' options='degreeSpecializationOptions'
+								data-ng-model="appl.specialization" name="specialization" 
+								maxlength="50" required='true'></selectize>
+							<div class="alert alert-danger"
+								data-ng-show="eduForm.acknowledgement.$valid && eduForm.specialization.$invalid">required (MaxLength: 50 char).</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-success">
+			<div class="panel-heading">Recent Mark Sheet</div>
+			<div class="panel-body">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<p class="help-block">
+							<strong>Copy of X and/or XII and/or recent college
+								Semester Mark sheet</strong>
+						</p>
+						MarkSheet1:<i style="color:rgb(256, 0, 0);" data-ng-show="eduForm.markSheet1.$error.required">(*required)</i><br>
+						<input type="file" data-ngf-select data-ng-model="markSheet1"
+							name="markSheet1" data-ngf-max-size="1MB"
+							accept=".pdf, .doc, .docx, image/gif, image/jpeg" required>
+
+						<div data-ng-show="eduForm.markSheet1.$error.maxSize"
+							class="alert alert-danger">
+							<strong>ERROR!</strong> File too large {{errorFiles[0].size /
+							1000000|number:1}}MB: max 1M
+						</div>
+						<img data-ng-show="eduForm.markSheet1.$valid"
+							data-ngf-thumbnail="markSheet1" class="img-thumbnail" width="80"
+							height="100">
+						<button data-ng-click="markSheet1 = null"
+							data-ng-show="markSheet1" class="btn">Remove</button>
+						<br /> MarkSheet2:(Optional)<input type="file" data-ngf-select
+							data-ng-model="markSheet2" name="markSheet2"
+							data-ngf-max-size="1MB"
+							accept=".pdf, .doc, .docx, image/gif, image/jpeg">
+						<div data-ng-show="eduForm.markSheet2.$error.maxSize"
+							class="alert alert-danger">
+							<strong>ERROR!</strong> File too large {{errorFiles[0].size /
+							1000000|number:1}}MB: max 1M
+						</div>
+						<img data-ng-show="eduForm.markSheet2.$valid"
+							data-ngf-thumbnail="markSheet2" class="img-thumbnail" width="80"
+							height="100">
+						<button data-ng-click="markSheet2 = null"
+							data-ng-show="markSheet2" class="btn">Remove</button>
+
+					</div>
+				</div>
+
+				<div class="col-sm-3">
+					<div class="form-group">
+						<label class="control-label" for="recentAggregatePercent">Recent
+							Aggregate %*:</label> <input data-ng-model="appl.recentAggregatePercent"
+							type="number" min="0" max="100" class="form-control"
+							data-ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01"
+							name="recentAggregatePercent" placeholder="" required> <i
+							data-ng-show="!eduForm.recentAggregatePercent.$valid">Invalid!</i>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="form-group">
+						<label class="control-label" for="recentAggregateIn">Obtained
+							In*:</label> <input data-ng-model="appl.recentAggregateIn" type="text"
+							maxlength="15" class="form-control" id="recentAggregateIn"
+							placeholder="eg. X / XII / Semester" required>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		<div class="panel panel-success">
+			<div class="panel-heading">Tuition Receipt</div>
+			<div class="panel-body">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<p class="help-block">
+							<strong>Tuition Fees Receipt or Letter from the
+								Educational Institution</strong>
+						</p>
+						Tuition Fee Receipt1: <i style="color:rgb(256, 0, 0);" 
+							data-ng-show="eduForm.tuitionReceipt1.$error.required">(*required)</i><br>
+						<input type="file" data-ngf-select data-ng-model="tuitionReceipt1"
+							name="tuitionReceipt1" data-ngf-max-size="1MB"
+							accept=".pdf, .doc, .docx, image/gif, image/jpeg" required>
+
+						<div data-ng-show="eduForm.tuitionReceipt1.$error.maxSize"
+							class="alert alert-danger">
+							<strong>ERROR!</strong> File too large {{errorFiles[0].size /
+							1000000|number:1}}MB: max 1M
+						</div>
+						<img data-ng-show="eduForm.tuitionReceipt1.$valid"
+							data-ngf-thumbnail="tuitionReceipt1" class="img-thumbnail"
+							width="80" height="100">
+						<button data-ng-click="tuitionReceipt1 = null"
+							data-ng-show="tuitionReceipt1" class="btn">Remove</button>
+
+						<br /> Tuition Fee Receipt2: (Optional) <input type="file"
+							data-ngf-select data-ng-model="tuitionReceipt2"
+							name="tuitionReceipt2" data-ngf-max-size="1MB"
+							accept=".pdf, .doc, .docx, image/gif, image/jpeg">
+
+						<div data-ng-show="eduForm.tuitionReceipt2.$error.maxSize"
+							class="alert alert-danger">
+							<strong>ERROR!</strong> File too large {{errorFiles[0].size /
+							1000000|number:1}}MB: max 1M
+						</div>
+						<img data-ng-show="eduForm.tuitionReceipt2.$valid"
+							data-ngf-thumbnail="tuitionReceipt2" class="img-thumbnail"
+							width="80" height="100">
+						<button data-ng-click="tuitionReceipt2 = null"
+							data-ng-show="tuitionReceipt2" class="btn">Remove</button>
+
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="form-group">
+						<label class="control-label" for="annualTuitionFee">Annual
+							Tuition Fee (₹.)*:</label> <input data-ng-model="appl.annualTuitionFee"
+							type="number" min="0" max="5000000" class="form-control"
+							id="annualTuitionFee" placeholder="" required>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="panel panel-success">
+			<div class="panel-heading">Income Proof</div>
+			<div class="panel-body">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<p class="help-block">
+							<strong>Salary Slip or Letter from Employer</strong>
+						</p>
+						<input type="file" data-ngf-select data-ng-model="incomeProof"
+							name="incomeProof" data-ngf-max-size="1MB"
+							accept=".pdf, .doc, .docx, image/gif, image/jpeg" required>
+						<i style="color:rgb(256, 0, 0);" data-ng-show="eduForm.incomeProof.$error.required">*required</i><br>
+						<div data-ng-show="eduForm.incomeProof.$error.maxSize"
+							class="alert alert-danger">
+							<strong>ERROR!</strong> File too large {{errorFiles[0].size /
+							1000000|number:1}}MB: max 1M
+						</div>
+						<img data-ng-show="eduForm.incomeProof.$valid"
+							data-ngf-thumbnail="incomeProof" class="img-thumbnail" width="80"
+							height="100">
+						<button data-ng-click="incomeProof = null"
+							data-ng-show="incomeProof" class="btn">Remove</button>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="form-group">
+						<label class="control-label" for="annualFamilyIncome">Annual
+							Family Income (/.)*:</label> <input
+							data-ng-model="appl.annualFamilyIncome" type="number" min="0"
+							max="1000000" class="form-control" id="annualFamilyIncome"
+							placeholder="" required>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="panel panel-success">
+			<div class="panel-heading">Nagarathar Certification</div>
+			<div class="panel-body">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<p class="help-block">
+							<strong>Certification from a reputed local Nagarathar or
+								a Nagarathar Sangam or a Nagarathar Kovil Trustee</strong>
+						</p>
+						<input type="file" data-ngf-select data-ng-model="nagaratharProof"
+							name="nagaratharProof" data-ngf-max-size="1MB"
+							accept=".pdf, .doc, .docx, image/gif, image/jpeg" required>
+						<i style="color:rgb(256, 0, 0);" data-ng-show="eduForm.nagaratharProof.$error.required">*required</i><br>
+						<div data-ng-show="eduForm.nagaratharProof.$error.maxSize"
+							class="alert alert-danger">
+							<strong>ERROR!</strong> File too large {{errorFiles[0].size /
+							1000000|number:1}}MB: max 1M
+						</div>
+						<img data-ng-show="eduForm.nagaratharProof.$valid"
+							data-ngf-thumbnail="nagaratharProof" class="img-thumbnail"
+							width="80" height="100">
+						<button data-ng-click="nagaratharProof = null"
+							data-ng-show="nagaratharProof" class="btn">Remove</button>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="panel">
+						<h4>Nagarathar Reference in USA</h4>
+						<div class="form-group">
+							<label class="control-label" for="referenceName">Name:</label> <input
+								data-ng-model="appl.referenceName" type="text" maxlength="30"
+								class="form-control" id="referenceName"
+								placeholder="US Reference name">
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="referencePhone">Phone
+								Number:</label> <input data-ng-model="appl.referencePhone" type="text"
+								maxlength="10" class="form-control" id="referencePhone"
+								placeholder="9999999999">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="panel panel-success">
+			<div class="panel-heading">Scholarship Letter</div>
+			<div class="panel-body">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<p class="help-block">
+							<strong>Letter stating why you should be consider for
+								the Scholarship</strong>
+						</p>
+
+						<input type="file" data-ngf-select
+							data-ng-model="scholarshipLetter" name="scholarshipLetter"
+							data-ngf-max-size="1MB"
+							accept=".pdf, .doc, .docx, image/gif, image/jpeg" required>
+						<i style="color:rgb(256, 0, 0);" data-ng-show="eduForm.scholarshipLetter.$error.required">*required</i><br>
+						<div data-ng-show="eduForm.scholarshipLetter.$error.maxSize"
+							class="alert alert-danger">
+							<strong>ERROR!</strong> File too large {{errorFiles[0].size /
+							1000000|number:1}}MB: max 1M
+						</div>
+						<img data-ng-show="eduForm.scholarshipLetter.$valid"
+							data-ngf-thumbnail="scholarshipLetter" class="img-thumbnail"
+							width="80" height="100">
+						<button data-ng-click="scholarshipLetter = null"
+							data-ng-show="scholarshipLetter" class="btn">Remove</button>
+
+					</div>
+				</div>
+				<!-- 
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label class="control-label" for="otherScholarships">Other Scholarships applied/applying for:</label> 
+						<textarea data-ng-model="appl.otherScholarships" rows="4"
+							maxlength="300" class="form-control" id="otherScholarships"
+							placeholder=
+							"eg. Canada Nagarathar Sangam; Dubai Nagarathar Sangam; Koviloor Madayala; London Nagarathar Sangam; Singapore Nagarathar Sangam "> </textarea>
+					</div>
+				</div>
+				 -->
+			</div>
+		</div>
+
+		<div class="panel panel-success">
+			<div class="panel-heading">Bank Account Details</div>
+			<div class="panel-body">
+				<div class="row row-eq-height">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="checkToName">
+								Account Holder Name: (for direct deposit if approved)*
+								<br /> Should be
+								Applicant or Parent(s)
+							</label> <input data-ng-model="appl.checkToName" type="text"
+								maxlength="35" class="form-control" id="checkToName"
+								placeholder="" required>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<p class="text-danger"><b>Make sure Your Bank Details are current and accurate. 
+						Make a note of bank details provided for your records.
+						Mistakes in bank details may cause extreme delay in scholarship award direct deposit. (if Approved)</b></P> 
+					</div>
+
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="bankName">Bank Name*:</label> <input
+								data-ng-model="appl.bankName" type="text" maxlength="35"
+								class="form-control" id="bankName" placeholder="Bank Name" required>
+						</div>
+					</div>				
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="branchName">Branch
+								Name*:</label> <input data-ng-model="appl.branchName" type="text"
+								maxlength="35" class="form-control" id="branchName"
+								placeholder="Branch Name" required>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="branchIfscCode">IFSC
+								Code*:</label> <input data-ng-model="appl.branchIfscCode" type="text"
+								maxlength="11" minlength="11" class="form-control" id="branchIfscCode"
+								pattern="[A-Za-z]{4}[0].{6}" title="First 4 alpha char , 5th 0, total 11 char"
+								placeholder="Branch IFSC Code" required>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="reEnterBranchIfscCode">Re-enter
+								IFSC Code*:</label> <input data-ng-model="reEnterBranchIfscCode"
+								type="text" maxlength="11" minlength="11" class="form-control"
+								id="reEnterBranchIfscCode" placeholder="Branch IFSC Code" required
+								data-custom-validation-error="reEnterBranchIfscCode != appl.branchIfscCode ? 'Branch IFSC Code entered don\'t match' : ''">
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="bankSwiftCode">Bank
+								Swift Code: (optional)</label> <input data-ng-model="appl.bankSwiftCode"
+								type="text" maxlength="11" minlength="8" class="form-control" name="bankSwiftCode" 
+								id="bankSwiftCode" title="First 4 match IFSC Code, 5-6: IN, 7-8: BB, 3 char Branch Code"
+								placeholder="Bank Swift Code"
+								data-custom-validation-error="(appl.bankSwiftCode).length > 0 && ((appl.bankSwiftCode).substr(0,4) != (appl.branchIfscCode).substr(0,4) ||
+								(appl.bankSwiftCode).toUpperCase().substr(4,2) != 'IN') ? 
+								'Length 8 or 11 char. First 4 chars of Swift Code should match first 4 chars of IFSC Code. 5-6: IN, 7-8: locationCode, 3 char Branch Code optional' : ''" >
+							<div class="alert alert-danger"
+								data-ng-show="eduForm.bankSwiftCode.$invalid ">
+								'Length 8 or 11 char. First 4 chars of Swift Code should match first 4 chars of IFSC Code. 5-6: IN, 7-8: locationCode, 3 char Branch Code optional' .</div>
+								
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="reEnterBankSwiftCode">Re-enter
+								Bank Swift Code:</label> <input data-ng-model="reEnterBankSwiftCode"
+								type="text" maxlength="11" minlength="8" class="form-control" name="reEnterSwiftCode"
+								id="reEnterSwiftCode" placeholder="Bank Swift Code" 
+								data-custom-validation-error="(appl.bankSwiftCode).length > 0 && (reEnterBankSwiftCode != appl.bankSwiftCode) ? 'Bank Swift Code entered don\'t match' : ''">
+							<div class="alert alert-danger"
+								data-ng-show="eduForm.reEnterSwiftCode.$invalid ">
+								'Bank Swift Code entered don\'t match' .</div>
+
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="accountNumber">Bank
+								Account No*:</label> <input data-ng-model="appl.accountNumber"
+								type="text" maxlength="30" class="form-control"
+								id="accountNumber" placeholder="" required>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="reEnterAccountNumber">Re-enter
+								Bank Account No*:</label> <input data-ng-model="reEnterAccountNumber"
+								type="text" maxlength="30" class="form-control"
+								id="reEnterAccountNumber" placeholder="" required
+								data-custom-validation-error="reEnterAccountNumber != appl.accountNumber ? 'Account Number entered don\'t match' : ''">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="well">
+			<div class="checkbox">
+				<label class="control-label"> <input type="checkbox"
+					name="acknowledgement" data-ng-model="appl.acknowledgement"
+					data-ng-true-value="'Y'" data-ng-false-value="'N'" required>
+					<em
+					style="color: rgb(0, 0, 0); font-family: Tahoma, Geneva, sans-serif; font-size: 14.9px; line-height: normal; background-color: rgb(252, 246, 232);"><span
+						class="label-field"><strong>I certify that the
+								above information is true. I will abide by all the conditions
+								set forth by the Education Committee of NSNA. I assure to help
+								NSNA Education Committee and Nagarathar Students who are in need
+								of help. </br> By applying for educational assistance, I agree to
+								have the basic application details (Applicant Name, Native
+								Village, Degree and Year) disclosed/displayed as part of
+								application process transparency.
+						</strong></span></em>
+				</label>
+			</div>
+		</div>
+		<div data-ng-show="errorMsg" class="alert alert-danger">
+			<strong>ERROR!</strong> {{ errorMsg }}
+		</div>
+
+		<div class="alert alert-danger"
+			data-ng-show="eduForm.acknowledgement.$valid && eduForm.$invalid">Form Incomplete. Review and complete all required fields. Try clicking Submit button to get exact error message.</div>
+
+		<!--<button data-ng-click="SubmitApplication()" class="btn">Submit</button> -->
+		<button type="submit"
+			data-ng-click="eduForm.$valid && uploadFilesAndSubmit()"
+			class="btn btn-success" id="submitButton">Submit</button>
+		</br> </br>
+
+
+	</form>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#reEnterBranchIfscCode').bind("cut copy paste",function(e) {
+        e.preventDefault();
+    });	
+    
+    $('#reEnterAccountNumber').bind("cut copy paste",function(e) {
+        e.preventDefault();
+    });
+    
+    $('#reEnterSwiftCode').bind("cut copy paste",function(e) {
+        e.preventDefault();
+    });     
+    
+	document.getElementById("gender").selectedIndex = -1;
+	document.getElementById("nativeVillage").selectedIndex = -1;
+	document.getElementById("kovilPirivu").selectedIndex = -1;
+
+	$('#DOB .input-group.date').datepicker({});
+});
+</script>
+
+
+
