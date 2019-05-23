@@ -17,17 +17,23 @@ public interface EduapplicationRepository extends JpaRepository<Eduapplication, 
 	@EntityGraph(value = "EduApplWithProcessDetail", type = EntityGraphType.LOAD)
 	List<Eduapplication> findByFirstNameLike(String firstName);
 
-	@EntityGraph(value = "EduApplWithProcessDetail", type = EntityGraphType.LOAD)
-	List<Eduapplication> findByEduappProcessDetailProcessingStatus(String status);
+	@Query(value = "select * from Eduapplication a "
+			  + "inner join Eduapp_Process_Detail b ON a.id = b.eduapp_id "	
+			  + "where b.processing_Status = :status "
+			  + "and a.region = :region"
+			  , nativeQuery = true)
+	List<Eduapplication> findByEduappProcessDetailProcessingStatus(
+			@Param("status") String status,
+			@Param("region") String region);
 	
 	@EntityGraph(value = "EduApplWithProcessDetail", type = EntityGraphType.LOAD)
-	List<Eduapplication> findByApplicationYear(String year);
+	List<Eduapplication> findByApplicationYearAndRegion(String year, String region);
 	
 	@EntityGraph(value = "EduApplWithProcessDetail", type = EntityGraphType.LOAD)
-	List<Eduapplication> findByEduappProcessDetailReviewer(String reviewer);
+	List<Eduapplication> findByEduappProcessDetailReviewerAndRegion(String reviewer, String region);
 	
 	@EntityGraph(value = "EduApplWithProcessDetail", type = EntityGraphType.LOAD)
-	List<Eduapplication> findByApplicationYearAndEduappProcessDetailReviewer(String year, String reviewer);
+	List<Eduapplication> findByApplicationYearAndEduappProcessDetailReviewerAndRegion(String year, String reviewer, String region);
 
 	@EntityGraph(value = "EduApplWithProcessDetail", type = EntityGraphType.LOAD)
 	List<Eduapplication> findByStudentIdAndBirthdateOrderByApplicationYearDesc(String studentId, Date birthdate);
@@ -61,6 +67,7 @@ public interface EduapplicationRepository extends JpaRepository<Eduapplication, 
 	//		  + "inner join Eduapp_Process_Detail b ON a.id = b.eduapp_id "
 			  + "where a.application_Year = :applicationYear"
 			  + "  and a.id <> :applID "
+			  + "  and a.region = :region "
 			  + "  and (a.student_Id = :studentId"
 			  + "   or  a.birthdate = :birthdate"
 			  + "   or  a.email = :email"			  
@@ -79,12 +86,14 @@ public interface EduapplicationRepository extends JpaRepository<Eduapplication, 
 			@Param("firstName") String firstName ,
 			@Param("lastName") String lastName ,
 			@Param("fathersName") String fathersName,
-			@Param("mothersName") String mothersName);
+			@Param("mothersName") String mothersName,
+			@Param("region") String region);
 
 	//possible applicant match in other year applications
 	@Query(value = "select * from Eduapplication a "
 			  + "inner join Eduapp_Process_Detail b ON a.id = b.eduapp_id "	
-			  + "where a.application_Year <> :applicationYear and ("
+			  + "where a.application_Year <> :applicationYear and"
+			  + "  a.region = :region and ("
 			  + "  a.student_Id = :studentId "
 			  + "  or  a.birthdate = :birthdate"
 			  + "  or  a.email = :email"	
@@ -100,30 +109,61 @@ public interface EduapplicationRepository extends JpaRepository<Eduapplication, 
 			@Param("studentId") String studentId, 
 			@Param("applicationYear") String applicationYear,
 			@Param("birthdate") Date birthdate,
-			@Param("email") String email
+			@Param("email") String email,
+			@Param("region") String region
 			//,@Param("firstName") String firstName
 			);
 	
+	//possible duplicate in the same application Year
+	@Query(value = "select * from Eduapplication a "
+	//		  + "inner join Eduapp_Process_Detail b ON a.id = b.eduapp_id "
+			  + "where a.application_Year = :applicationYear"
+			  + "  and a.id <> :applID "
+			  + "  and a.region <> :region "
+			  + "  and (a.student_Id = :studentId"
+			  + "   or  a.birthdate = :birthdate"
+			  + "   or  a.email = :email"			  
+			  + "   or  ( replace(replace(a.first_Name,' ',''),'.', '') =  replace(replace(:firstName,' ',''), '.', '') "
+			  + "           and replace(replace(a.last_Name,' ', ''), '.', '') = replace(replace(:lastName, ' ', ''), '.', '') )"
+			  + "   or  ( replace(replace(a.fathers_Name, ' ', ''), '.', '') = replace(replace(:fathersName,' ', ''), '.', '') "
+			  + "           and replace(replace(a.mothers_Name,' ',''), '.', '') = replace(replace(:mothersName,' ',''), '.', '') )"
+			  + " )"
+			  , nativeQuery = true)
+	List<Eduapplication> findPossibleDuplicateAcrossRegions(
+			@Param("applID") Long applID,
+			@Param("studentId") String studentId, 
+			@Param("applicationYear") String applicationYear,
+			@Param("birthdate") Date birthdate,
+			@Param("email") String email,			
+			@Param("firstName") String firstName ,
+			@Param("lastName") String lastName ,
+			@Param("fathersName") String fathersName,
+			@Param("mothersName") String mothersName,
+			@Param("region") String region);
+
 
 	
 	//partial search by Name or Emal or SudentId 
 	@Query(value = "select * from Eduapplication a "
-			  + "where a.LAST_NAME like :searchString " 
+			  + "where (a.LAST_NAME like :searchString " 
 			  + "   or a.FIRST_NAME like :searchString "
 			  + "   or a.EMAIL like :searchString "
-			  + "	or a.STUDENT_ID = :searchStudentId "
+			  + "	or a.STUDENT_ID = :searchStudentId )"
+			  + " and a.region= :region "
 			  , nativeQuery = true)
 	List<Eduapplication> findByNameIdEmail(
 			@Param("searchString") String searchString, 
-			@Param("searchStudentId") String searchStudentId);	
+			@Param("searchStudentId") String searchStudentId,
+			@Param("region") String region);	
 	
 	//applications in status 'ReviewComplete' or 'Approved' or 'Awarded' 
 	@Query(value = "select * from Eduapplication a "
 			  + "inner join Eduapp_Process_Detail b ON a.id = b.eduapp_id "	
 			  + "where b.Processing_Status IN ('ReviewComplete', 'Approved', 'Awarded') " 
 			  + "  and a.application_Year = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG) "
+			  + " and a.region = :region "
 			  , nativeQuery = true)
-	List<Eduapplication> findApplicationsForAwardAdmin();	
+	List<Eduapplication> findApplicationsForAwardAdmin(@Param("region") String region);	
 	
 
 	@Modifying

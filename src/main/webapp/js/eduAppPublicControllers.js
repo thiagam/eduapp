@@ -48,8 +48,8 @@ eduApp.controller('EduApplicationCtrl', [
 						console.log($scope.appl.birthdate);
 						if (!$scope.appl.birthdate) {
 
-							$scope.pageErrMsg = "Invalid StudentId and Date of Birth. If " +
-									"you have a valid NSNA StudentID please try again. " +
+							$scope.pageErrMsg = "Invalid StudentId and Date of Birth. If you have a valid " +
+							$rootScope.scholarshipOriginationInfo.label + " StudentID please try again. " +
 									"Continuing to submit the application will result in " +
 									"treating you as new student and may delay your application processing.";
 
@@ -926,6 +926,7 @@ eduApp.controller('EduAppStatusCtrl', function($scope, $http, $state, $statePara
 		dobString = $stateParams.birthDate //in 'dd/mm/yyyy' format
 	}; 
 	var serializedData = $.param({
+		option : $stateParams.option,
 		confirmationNmbr : $stateParams.confirmationNmbr,
 		studentId : $stateParams.studentId,
 		birthDate : dobString

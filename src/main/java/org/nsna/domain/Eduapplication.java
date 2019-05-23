@@ -111,6 +111,7 @@ public class Eduapplication implements java.io.Serializable {
 	private String universityRegisterNmbr;	
 	private Set<EduappAttachment> eduappAttachments = new HashSet<EduappAttachment>(0);
 	private EduappProcessDetail eduappProcessDetail;
+	private String region;
 
 	public Eduapplication() {
 	}
@@ -127,7 +128,7 @@ public class Eduapplication implements java.io.Serializable {
 			String accountNumber, String bankName, String branchName, String branchIfscCode,
 			String bankSwiftCode, String branchAddressLine1, String branchAddressLine2, String branchAddressLine3,
 			Character phoneTypeMobile, String institutionCity, String otherScholarships,
-			String universityName, String universityRegisterNmbr,
+			String universityName, String universityRegisterNmbr, String region,
 			Set<EduappAttachment> eduappAttachments, EduappProcessDetail eduappProcessDetail) {
 		this.studentId = studentId;
 		this.applicationYear = applicationYear;
@@ -182,6 +183,7 @@ public class Eduapplication implements java.io.Serializable {
 		this.universityRegisterNmbr = universityRegisterNmbr;		
 		this.eduappAttachments = eduappAttachments;
 		this.eduappProcessDetail = eduappProcessDetail;
+		this.region = region;
 	}
 
 	@Id
@@ -783,6 +785,15 @@ public class Eduapplication implements java.io.Serializable {
 	  
 	  public void setScholarshipLetterAttachmentId(long id) {
 	  }
+
+		@Column(name = "REGION", length = 10)
+		public String getRegion() {
+			return this.region;
+		}
+
+		public void setRegion(String region) {
+			this.region = region;
+		}	
 
 
 }

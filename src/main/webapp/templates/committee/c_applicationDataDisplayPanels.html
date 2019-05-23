@@ -76,7 +76,7 @@
 		</div>
 	 <br />
 			<div class="row row-eq-height">
-				<div class="col-sm-12">US Reference:
+				<div class="col-sm-12">{{$ctrl.displayAppl.region}} Reference:
 					<strong>
 						<div ng-if=$ctrl.displayAppl.referenceName>
 							{{$ctrl.displayAppl.referenceName + ' / ' +
@@ -172,6 +172,16 @@
 				Branch IFSC Code: <strong>{{$ctrl.displayAppl.branchIfscCode}} </strong> <br>
 				Bank Swift Code: <strong>{{$ctrl.displayAppl.bankSwiftCode}} </strong> <br>								
 			
+		</div>
+	</div>
+</div>
+
+<div class="panel panel-success">
+	<div class="panel-heading">Reviewer Preference and Processing Comments</div>
+	<div class="panel-body">
+		<div class="col-sm-12 text-left">
+				<strong>{{$ctrl.displayAppl.eduappProcessDetail.reviewerPrefComment}} </strong> <br>
+				<strong>{{$ctrl.displayAppl.eduappProcessDetail.reviewerProcessingComment}} </strong> <br>			
 		</div>
 	</div>
 </div>
