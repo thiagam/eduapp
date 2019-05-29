@@ -43,10 +43,10 @@ public interface EduappProcessDetailRepository extends JpaRepository<EduappProce
 					  "set MARK_SCORE = null, INCOME_SCORE = null, HARDSHIP_SCORE=null, " +
 					   	   " REVIEWER_SCORE = null, TOTAL_SCORE = null, " +
 					   	   " RANK = null " +
-					" where EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG)) " +
+					" where EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG) and REGION = :region) " +
 						" AND RANK is NOT NULL" +
 						" AND PROCESSING_STATUS = 'ReviewComplete' ", nativeQuery = true)
-	int clearCurrentYearScoresAndRanking();	
+	int clearCurrentYearScoresAndRanking(@Param("region") String region);	
 	
 	@Modifying
 	@Transactional
@@ -78,10 +78,10 @@ public interface EduappProcessDetailRepository extends JpaRepository<EduappProce
 	@Transactional
 	@Query(value =	"update EDUAPP_PROCESS_DETAIL " +
 					"   set AWARD_AMOUNT  = (SELECT top 1 DEFAULT_AWARD_AMOUNT FROM EDUAPP_CONFIG), PROCESSING_STATUS = 'Approved' " +
-					" WHERE EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG)) " +
+					" WHERE EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG) and REGION = :region) " +
 					"   AND PROCESSING_STATUS = 'ReviewComplete' ",
 					nativeQuery = true)
-	int setDefaultAwardAmount();
+	int setDefaultAwardAmount(@Param("region") String region);
 	
 	@Modifying
 	@Transactional
@@ -89,12 +89,12 @@ public interface EduappProcessDetailRepository extends JpaRepository<EduappProce
 					"   set CHECK_NUMBER = concat('EDUFX' , FORMATDATETIME(CURRENT_TIMESTAMP(), 'YYMMdd')), " +
 					"	PROCESSING_STATUS = 'Awarded' " +
 					" WHERE EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG) " +
-					"			AND EDUAPPLICATION.BRANCH_IFSC_CODE is not null) " +
+					"			AND EDUAPPLICATION.BRANCH_IFSC_CODE is not null and REGION = :region) " +
 					"   AND PROCESSING_STATUS = 'Approved' " +
 					"   AND NOT ( " +
 					"     (USE_SWIFT = 'Y' and not (length(isNull(P_BANK_SWIFT_CODE,''))  in (8, 11)) ) OR " +
 					"     (isNull(USE_SWIFT,'N') = 'N' and  (length(isNull(P_BRANCH_ADDRESS_LINE1,'')) = 0 or length(isNull(P_BRANCH_ADDRESS_LINE3,'')) = 0) )) ",
 					nativeQuery = true)
-	int setStatusToAwardedForApprovedWithBankDetails();
+	int setStatusToAwardedForApprovedWithBankDetails(@Param("region") String region);
 	
 }

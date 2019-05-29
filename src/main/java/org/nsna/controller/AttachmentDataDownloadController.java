@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.nsna.domain.EduappAttachment;
 import org.nsna.domain.EduappAttachmentRepository;
 import org.nsna.service.AppParameterService;
+import org.nsna.service.ScholarshipOriginationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
@@ -28,6 +29,9 @@ public class AttachmentDataDownloadController {
 	
 	@Autowired
 	private AppParameterService appParameterService;	
+	
+	@Autowired
+	private ScholarshipOriginationService scholarshipOriginationService;
 	
 	@RequestMapping(value="/downloadAttachment", method = RequestMethod.GET)
     public void downloadFile(@RequestParam("attachmentId") long attachmentId, HttpServletResponse response) throws IOException, SQLException {
@@ -64,7 +68,8 @@ public class AttachmentDataDownloadController {
 */		
         
         File file = null;
- 		String applAttachmentBackupRootFolder = appParameterService.getApplAttachmentBackupRootFolder();
+ 		String applAttachmentBackupRootFolder = appParameterService.getApplAttachmentBackupRootFolder(
+ 				scholarshipOriginationService.getScholarshipOriginationRegion());
  		String theDir = applAttachmentBackupRootFolder + attachment.getEduapplication().getId() + "_" + attachment.getEduapplication().getStudentId();
 
  		String path = theDir + "\\" + attachment.getDocumentCategory() + "-" + attachment.getDocumentOriginalFilename(); 		

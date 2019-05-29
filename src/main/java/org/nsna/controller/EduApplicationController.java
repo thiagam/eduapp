@@ -26,6 +26,7 @@ import org.nsna.domain.Eduapplication;
 import org.nsna.domain.EduapplicationRepository;
 import org.nsna.service.AppParameterService;
 import org.nsna.service.MailService;
+import org.nsna.service.ScholarshipOriginationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,9 @@ public class EduApplicationController {
 	@Autowired
 	private AppParameterService appParameterService;
 
+	@Autowired
+	private ScholarshipOriginationService scholarshipOriginationService;
+	
 	@RequestMapping(value = "/public/getBlankEduApplication", method = RequestMethod.POST)
 	public Eduapplication getBlankEduApplication(Principal principal, HttpServletRequest request,
 			@RequestParam("oldStudent") String oldStudent,
@@ -135,9 +139,13 @@ public class EduApplicationController {
 		
 		//set application Year -- get the application year from the config record.
 		//String currentYear = new SimpleDateFormat("yyyy").format(new Date());
-		List<EduappConfig> eduappConfigList = eduappConfigRepository.findAll();
+		List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 		String  currentYear = eduappConfigList.get(0).getAppYear();
 		application.setApplicationYear(currentYear);
+		logger.info("currentYear.."+currentYear);
+		logger.info("Scholarship Award Notif Data:.."+eduappConfigList.get(0).getScholarshipAwardNotificationDate());
+		logger.info("eduappConfigList toString:.."+ eduappConfigList.get(0).toString());
 		
 		// generate StudentId if one not passed.
 		Random rand = new Random();		
@@ -191,6 +199,8 @@ public class EduApplicationController {
 		if (principal != null) {
 			application.setUserName(principal.getName());
 		}
+		
+		application.setRegion(scholarshipOriginationService.getScholarshipOriginationRegion());
 		eduapplicationRepository.save(application);
 		
 		//backup all attachments in the backup file folder
@@ -207,7 +217,9 @@ public class EduApplicationController {
 				+ "   border-collapse: collapse;" + " </style>"
 
 				+ "<p >Dear Applicant,</p> " + "<p >&nbsp; &nbsp;&nbsp;</p>"
-				+ "<p >&nbsp; &nbsp; &nbsp; NSNA has received your application for education scholarship. All applications will be reviewed and scholarship awarded for candidates will be notified by Feb "+ (Integer.parseInt(currentYear) + 1) + ". &nbsp;</p> "
+				+ "<p >&nbsp; &nbsp; &nbsp;"+ scholarshipOriginationService.getScholarshipOriginationLabel() +"has received your application for education scholarship. "
+				+ "All applications will be reviewed and scholarship awarded for candidates will be notified by"
+				+ eduappConfigList.get(0).getScholarshipAwardNotificationDate() + ". &nbsp;</p> "
 				+ "<p >&nbsp; &nbsp;&nbsp;</p> "
 				+ "<p >&nbsp; &nbsp; &nbsp; Please note your StudentID and application confirmation Number. It is important for you to provide these for any future communication.&nbsp;</p>"
 				+ "				<table>" + "					<thead> " + "                    <th>Student ID:</th>"
@@ -218,10 +230,10 @@ public class EduApplicationController {
 				+ "                </tbody>" + "            </table>" 
 				+ " <br />"
 				+ " <p >&nbsp; &nbsp;</p>"
-				+ " <p><strong>NOTE: Do not reply to this email. For all future communication use nsnaedu@achi.org </strong> </p>"
-				+ " <p>Sincerely, </br> NSNA Education Committee </br>"
-				+ " Email: nsnaedu@achi.org </br>"
-				+ " Web Site: www.achi.org </p>"
+				+ " <p><strong>NOTE: Do not reply to this email. For all future communication use "+ scholarshipOriginationService.getEmail() +"  </strong> </p>"
+				+ " <p>Sincerely, </br> "+ scholarshipOriginationService.getScholarshipOriginationLabel() +" Education Committee </br>"
+				+ " Email: "+ scholarshipOriginationService.getEmail() +" </br>"
+				+ " Web Site: "+ scholarshipOriginationService.getWebsite() +" </p>"
 				+ "</body>";
 
 		try {
@@ -233,7 +245,7 @@ public class EduApplicationController {
 /*
  		//Send SMS through Twilio Service
 		try {
-			TwilioMessagingService.sendSMSMessage("1" + application.getPhone1(), "NSNA StudentId:"
+			TwilioMessagingService.sendSMSMessage("1" + application.getPhone1(),  scholarshipOriginationService.getScholarshipOriginationLabel() +" "StudentId:"
 				+ application.getStudentId() + "     Appl Confirmation Number: " + application.getConfirmationNmbr());
 		} catch(Exception ex) {
 			logger.error(ex.getMessage());
@@ -242,7 +254,7 @@ public class EduApplicationController {
 		
 /*		
 		//Send SMS through Nexmo Service
-		String smsMessage = "NSNA StudentId:" + application.getStudentId() + 
+		String smsMessage = scholarshipOriginationService.getScholarshipOriginationLabel() +""StudentId:" + application.getStudentId() + 
 				"     Appl Confirmation Number: " + application.getConfirmationNmbr();
 		nexmoMessagingService.sendSMSMessage("1" + application.getPhone1(), smsMessage);
 */
@@ -318,7 +330,8 @@ public class EduApplicationController {
 	
 	
 	private void backupAttachmentFiles (Eduapplication application) throws IOException {
-		String applAttachmentBackupRootFolder = appParameterService.getApplAttachmentBackupRootFolder();
+		String applAttachmentBackupRootFolder = appParameterService.getApplAttachmentBackupRootFolder(
+ 				scholarshipOriginationService.getScholarshipOriginationRegion());
 		//Create folder (if not exists) to store application attachments
 		File theDir = new File(applAttachmentBackupRootFolder + application.getId() + "_" +application.getStudentId());
 		// if the directory does not exist, create it
@@ -375,7 +388,8 @@ public class EduApplicationController {
 	
 	@RequestMapping(value = "/public/getEduAppConfig", method = RequestMethod.GET)
 	public EduappConfig getEduAppConfig() {
-		List<EduappConfig> results = eduappConfigRepository.findAll();
+		List<EduappConfig> results = eduappConfigRepository.findByRegion(
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 		return results.get(0);
 	}		
 
@@ -429,8 +443,8 @@ public class EduApplicationController {
 			}
 		} else {
 			updateSwiftCodeData.recordFound = 0;
-			updateSwiftCodeData.statusMsg = "No matching application found. Use back button to reenter the input."
-					+ "Use nsnaedu@achi.org for all of your correspondence.";
+			updateSwiftCodeData.statusMsg = "No matching application found. Use back button to reenter the input. Use "
+					+ scholarshipOriginationService.getEmail() + " for all of your correspondence.";
 		}
 		
 		return updateSwiftCodeData;

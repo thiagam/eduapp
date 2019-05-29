@@ -1,3 +1,6 @@
-/application-dev.properties
-/application-prod.properties
-/application-test.properties
+/application-nsnadev.properties
+/application-nsnatest.properties
+/application-nsnaprod.properties
+/application-lnsdev.properties
+/application-lnstest.properties
+/application-lnsprod.properties

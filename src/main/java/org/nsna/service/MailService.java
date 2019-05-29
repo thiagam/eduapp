@@ -13,12 +13,16 @@ import javax.mail.internet.MimeMessage;
 import org.nsna.controller.EduApplicationController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class MailService {
+	
+	@Autowired
+	private ScholarshipOriginationService scholarshipOriginationService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MailService.class);
 	
@@ -52,7 +56,7 @@ public class MailService {
 		//final String password = "aishas21";// change accordingly
 
 		// Sender's email ID needs to be mentioned
-		String from = "noreply@achi.org";// change accordingly
+		String from = scholarshipOriginationService.getNoReplyEmail();// change accordingly
 
 		Properties props = new Properties();
 		/*
@@ -88,7 +92,7 @@ public class MailService {
 			}
 
 			// Set Subject: header field
-			message.setSubject("NSNA Education Application Confirmation");
+			message.setSubject(scholarshipOriginationService.getScholarshipOriginationLabel() + "Education Application Confirmation");
 
 			// Now set the actual text message
 			//message.setText(emailMessage );

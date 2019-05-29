@@ -1,5 +1,5 @@
 <div class="col-sm-10">
-	<h2>Application Instructions for NSNA Education Scholarship {{eduappConfig.appYear}}-
+	<h2>Application Instructions for {{scholarshipOriginationInfo.scholarshipOriginationLabel}} Education Scholarship {{eduappConfig.appYear}}-
 		{{eduappConfig.academicEndYear}}</h2>
 	<div class="well">
 		<h4>To ensure that your application is complete and processed
@@ -11,7 +11,7 @@
 			accepted after 12 noon {{eduappConfig.eduappWindowEnd}}, {{eduappConfig.appYear}}.
 		</h5>
 		<h5>
-			<strong>Manual/email applications will not be processed this
+			<strong> Manual/email applications will not be processed this
 				year. All applications need to be submitted via the online form.</strong>
 		</h5>
 	</div>
@@ -34,7 +34,7 @@
 						size of each document should be within 1 MB</strong> :
 					<div class=row>
 						<ul>
-							<div class="col-sm-6">
+							<div ng-class="(scholarshipOriginationInfo.portalUsedFromYear != eduappConfig.appYear ? 'col-md-6' : 'col-md-12' )">
 								<li><span style="text-decoration: underline">For <strong>new
 											applicants</strong> the following documents are required:
 								</span>
@@ -62,24 +62,24 @@
 												telephone number of the recommending Nagarathar is required.</strong></li><br/>
 											<li>A <strong> letter from you</strong> stating why you should be selected
 												for the scholarship.</li><br/>
-											<li>A recent <strong> passport size photo.</strong> <u>It is optional</u>, although providing photos helps NSNA 
-											    raise more funds which in turn will make it possible to support more
-											    students. </li>											 
+											<li>A recent <strong> passport size photo.</strong> <u>It is optional</u>, although providing photos helps
+											    {{scholarshipOriginationInfo.scholarshipOriginationLabel}} raise more funds which in turn will make it
+											    possible to support more students. </li>											 
 										</ol>
 									</div>
 									</li>
 							</div>
 						</ul>
 						<ul>
-							<div class="col-sm-6">
+							<div class="col-sm-6" ng-if="scholarshipOriginationInfo.portalUsedFromYear != eduappConfig.appYear">
 								<li><span style="text-decoration: underline">For <strong>repeat
 											candidates</strong> the following documents are required.
 								</span>
 									<div class="well">
 										<ol>
 											<li>Repeat candidates must provide a <strong>previous
-													valid NSNA student ID </strong>, without this you will not be
-												considered as a repeat candidate.
+													valid {{scholarshipOriginationInfo.scholarshipOriginationLabel}} student ID </strong>,
+													 without this you will not be considered as a repeat candidate.
 											</li> <br/>
 											<li><strong>Recent college authorized mark
 													sheet</strong> issued by the educational institution that you
@@ -97,7 +97,8 @@
 												telephone number of the recommending Nagarathar is required.</strong></li><br/>
 											<li>A <strong>letter from you</strong> stating why you should be selected
 												for the scholarship.</li><br/>
-											<li>A recent <strong> passport size photo.</strong> <u>It is optional</u>, although providing photos helps NSNA 
+											<li>A recent <strong> passport size photo.</strong> <u>It is optional</u>, although providing photos helps
+											    {{scholarshipOriginationInfo.scholarshipOriginationLabel}} 
 											    raise more funds which in turn will make it possible to support more students. </li>	
 										</ol>
 									</div></li>
@@ -147,7 +148,7 @@
 					bank account(provided in your application). 
 					The scholarship award money will be credited directly to your bank account. </li>					
 				<li>Please report any technical issues in the online
-					application process to nsnaedu@achi.org</li>
+					application process to {{scholarshipOriginationInfo.email}}</li>
 			</ul>
 		</div>
 	</div>
