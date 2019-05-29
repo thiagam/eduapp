@@ -54,7 +54,7 @@ eduApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 			}
 		}
 	}).state('scholarshipApp.status', {
-		url : 'status/:confirmationNmbr?studentId?birthDate',
+		url : 'status/:option?confirmationNmbr?studentId?birthDate',
 		views : {
 			'mainPanel@' : {
 				templateUrl : '/templates/public/eduAppStatus.html',
@@ -286,6 +286,11 @@ eduApp.controller('navCtrl',  function( $rootScope,  $http, $location, $state, $
 	$rootScope.userRole = $window.sessionStorage.userRole;
     $rootScope.authenticated = $window.sessionStorage.authenticated;
     
+	$http.get('/public/scholarshipOriginationInfo')
+	   .then(function(response) {
+				$rootScope.scholarshipOriginationInfo = response.data;
+		})
+
 	var authenticate = function(credentials, callback) {
 		var headers = credentials ? {authorization : "Basic "
 		        + btoa(credentials.username + ":" + credentials.password)

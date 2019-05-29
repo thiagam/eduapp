@@ -24,6 +24,7 @@ import org.nsna.domain.ReviewerProgress;
 import org.nsna.domain.User;
 import org.nsna.domain.UserRepository;
 import org.nsna.service.MailService;
+import org.nsna.service.ScholarshipOriginationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,21 +52,40 @@ public class EduProcessingController {
 	private MailService mailService;	
 	@Autowired
 	private EntityManager em;
+	@Autowired
+    private ScholarshipOriginationService scholarshipOriginationService;
 
 	// used in authentication process (security)
 	@RequestMapping("/user")
 	public User user(Principal principle) {
-		User loginUser = userRepository.findByUserName(principle.getName());
+		logger.debug("Inside User request. Name: "+ principle.getName());
+		try {
+		User loginUser = userRepository.findByUserName(principle.getName(),
+				scholarshipOriginationService.getScholarshipOriginationRegion());
+				
+		logger.debug("Searched User Email"+ loginUser.getUserEmail());
 		// clear the passwd before sending result to client.
 		// (passwd should not be sent back to client)
 		loginUser.setPasswordHash(null);
 		return loginUser;
+		} catch (Exception ex) {
+			logger.error("Inside User Search Exception Block: "+ ex.getMessage());
+			return null;
+		}
+	}
+
+	// used to retrieve the scholarshipOriginationInfo
+	@RequestMapping(value = "/public/scholarshipOriginationInfo", method = RequestMethod.GET)
+	public ScholarshipOriginationService getScholarshipOriginationInfo() {
+		
+		return scholarshipOriginationService;
 	}
 
 	//return non ended, non hidden users
 	@RequestMapping(value = "/getActiveUsers", method = RequestMethod.GET)
 	public List<User> getActiveUsers() {
-		List<User> results = userRepository.findActiveUsers();
+		List<User> results = userRepository.findActiveUsers(
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 		return results;
 	}
 
@@ -171,7 +191,8 @@ public class EduProcessingController {
 	public List<Eduapplication> loadMyEduApplications(Principal principal) {
 		// session.setAttribute("userName", principal.getName());
 		String user = principal.getName();
-		List<Eduapplication> results = eduapplicationRepository.findByEduappProcessDetailReviewer(user);
+		List<Eduapplication> results = eduapplicationRepository.findByEduappProcessDetailReviewerAndRegion(user,
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 		return results;
 
 	}
@@ -184,21 +205,29 @@ public class EduProcessingController {
 		Eduapplication eduApp = eduapplicationRepository.findOne(applID);
 		List<Eduapplication> potentialDup = eduapplicationRepository.findPossibleDuplicate(applID,
 				eduApp.getStudentId(), eduApp.getApplicationYear(), eduApp.getBirthdate(), eduApp.getEmail(),
-				eduApp.getFirstName(), eduApp.getLastName(), eduApp.getFathersName(), eduApp.getMothersName());
+				eduApp.getFirstName(), eduApp.getLastName(), eduApp.getFathersName(), eduApp.getMothersName(),
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 		List<Eduapplication> potentialOtherYearApps = eduapplicationRepository.findPossibleApplicantOtherYearApps(
-				eduApp.getStudentId(), eduApp.getApplicationYear(), eduApp.getBirthdate(), eduApp.getEmail()
+				eduApp.getStudentId(), eduApp.getApplicationYear(), eduApp.getBirthdate(), eduApp.getEmail(),
+				scholarshipOriginationService.getScholarshipOriginationRegion()
 		// ,eduApp.getFirstName()
 		);
+		List<Eduapplication> potentialDupAcrossRegions = eduapplicationRepository.findPossibleDuplicateAcrossRegions(
+				applID,eduApp.getStudentId(), eduApp.getApplicationYear(), eduApp.getBirthdate(), eduApp.getEmail(),
+				eduApp.getFirstName(), eduApp.getLastName(), eduApp.getFathersName(), eduApp.getMothersName(),
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 
 		results.add(0, eduApp);
 		results.add(1, potentialDup);
 		results.add(2, potentialOtherYearApps);
+		results.add(3, potentialDupAcrossRegions);
 		return results;
 	}
 
 	@RequestMapping(value = "/loadNewEduApplications", method = RequestMethod.GET)
 	public List<Eduapplication> loadNewEduApplications() {
-		List<Eduapplication> results = eduapplicationRepository.findByEduappProcessDetailProcessingStatus("New");
+		List<Eduapplication> results = eduapplicationRepository.findByEduappProcessDetailProcessingStatus("New",
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 		return results;
 	}
 
@@ -207,7 +236,8 @@ public class EduProcessingController {
 
 		List<Eduapplication> results = null;
 		if (!searchNameIdEmail.equals("")) {
-			results = eduapplicationRepository.findByNameIdEmail("%" + searchNameIdEmail + "%", searchNameIdEmail);
+			results = eduapplicationRepository.findByNameIdEmail("%" + searchNameIdEmail + "%", searchNameIdEmail
+					, scholarshipOriginationService.getScholarshipOriginationRegion());
 		}
 		return results;
 	}
@@ -217,6 +247,7 @@ public class EduProcessingController {
 	public List<Eduapplication> searchEduApplication(@RequestParam("searchAppYear") String searchAppYear,
 			@RequestParam("searchReviewer") String searchReviewer,
 			@RequestParam("searchNameIdEmail") String searchNameIdEmail) {
+		String region = scholarshipOriginationService.getScholarshipOriginationRegion();
 		// List<Eduapplication> results =
 		// eduapplicationRepository.findByFirstNameLike("Ab%");
 		// List<Eduapplication> results =
@@ -224,14 +255,14 @@ public class EduProcessingController {
 
 		List<Eduapplication> results = null;
 		if (!searchNameIdEmail.equals("")) {
-			results = eduapplicationRepository.findByNameIdEmail("%" + searchNameIdEmail + "%", searchNameIdEmail);
+			results = eduapplicationRepository.findByNameIdEmail("%" + searchNameIdEmail + "%", searchNameIdEmail, region);
 		} else if (!searchAppYear.equals("") && !searchReviewer.equals("")) {
-			results = eduapplicationRepository.findByApplicationYearAndEduappProcessDetailReviewer(searchAppYear,
-					searchReviewer);
+			results = eduapplicationRepository.findByApplicationYearAndEduappProcessDetailReviewerAndRegion(searchAppYear,
+					searchReviewer, region);
 		} else if (!searchAppYear.equals("")) {
-			results = eduapplicationRepository.findByApplicationYear(searchAppYear);
+			results = eduapplicationRepository.findByApplicationYearAndRegion(searchAppYear, region);
 		} else if (!searchReviewer.equals("")) {
-			results = eduapplicationRepository.findByEduappProcessDetailReviewer(searchReviewer);
+			results = eduapplicationRepository.findByEduappProcessDetailReviewerAndRegion(searchReviewer, region);
 		}
 		return results;
 	}
@@ -252,7 +283,8 @@ public class EduProcessingController {
 	}
 
 	@RequestMapping(value = "/public/checkApplicationStatus", method = RequestMethod.POST)
-	public StatusData checkApplicationStatus(@RequestParam("confirmationNmbr") String confirmationNmbr,
+	public StatusData checkApplicationStatus(
+			@RequestParam("option") String option, @RequestParam("confirmationNmbr") String confirmationNmbr,
 			@RequestParam("studentId") String studentId, @RequestParam("birthDate") String birthDate) {
 
 		List<EduappProcessDetail> appProcessingDetail = null;
@@ -260,7 +292,6 @@ public class EduProcessingController {
 		if (confirmationNmbr != null && confirmationNmbr.length() > 0) {
 			appProcessingDetail = eduappProcesDetailRepository.findByApplicationNmbr(confirmationNmbr);
 		} else {
-
 			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 			Date dob = null;
 			try {
@@ -271,7 +302,8 @@ public class EduProcessingController {
 			appProcessingDetail = eduappProcesDetailRepository.findByStudentIdAndBirthdate(studentId, dob);
 		}
 		
-		List<EduappConfig> eduappConfigList = eduappConfigRepository.findAll();
+		List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 		String  currentYear = eduappConfigList.get(0).getAppYear();
 		String nextYear = (new Integer(Integer.parseInt(currentYear) + 1)).toString();
 
@@ -283,23 +315,28 @@ public class EduProcessingController {
 			case "New":
 			case "Assigned":
 			case "RecommendReject":
-				statusData.statusMsg = "Application Received:  NSNA has successfully received your application for education scholarship. "
-						+ "All completed applications will be reviewed by the Selection Committee from October through December. "
-						+ "Status will be updated starting Oct 15th and updated periodically till Dec 31st. "
-						+ "The final selection will be made by Jan 15th "
-						+ "and Scholarship awards for candidates will be notified by Jan " + nextYear + ".";
+				statusData.statusMsg = "Application Received:  "+ scholarshipOriginationService.getScholarshipOriginationLabel() 
+				        +" has successfully received your application for education scholarship. "
+						+ "All completed applications will be reviewed by Selection Committee in next few months. Status will be "
+						+ "updated periodically during the review period (Review In Progress/Approved/Awarded/Rejected). "
+						+ "Scholarship awards for candidates will be notified within couple of months after approval";
 				break;
 			case "Rejected":
-				statusData.statusMsg = "Thank you  for applying to the NSNA Education Assistance program. We are sorry to inform you that your application has not been selected for a scholarship at this time. We encourage you to apply again next year. All the best. Use nsna.edu@achi.org for all of your correspondence.";
+				statusData.statusMsg = "Thank you  for applying to the "+ scholarshipOriginationService.getScholarshipOriginationLabel() 
+				+" Education Assistance program. We are sorry to inform you that your application has not been selected for a scholarship at this time."
+				+ " We encourage you to apply again next year. All the best. Use "+ scholarshipOriginationService.getEmail() +" for all of your correspondence.";
 				break;
 			case "ReviewComplete":
-				statusData.statusMsg = "Application Review InProgress: The application is being reviewed by the Selection Committee and the final selection list will be made by Jan 15th. Scholarship awards for candidates will be notified by Jan " + nextYear + ".";
+				statusData.statusMsg = "Application Review InProgress:  Status will be "  
+						+ "updated periodically during the review period (Review In Progress/Approved/Awarded/Rejected). "  
+				        + "Scholarship awards for candidates will be notified within couple of months after approval";
 				break;
 			case "Approved":
 				statusData.statusMsg = "Application Approved: Congratulations! Your application is approved for Scholarship.";
 				break;
 			case "Awarded":
-				statusData.statusMsg = "Scholarship Awarded: Congratulations! Your scholarship award is being credited to your bank account. Please check your bank account and email us at nsna.edu@achi.org to confirm that you have received the money.";
+				statusData.statusMsg = "Scholarship Awarded: Congratulations! Your scholarship award is being credited to your bank account."
+						+ " Please check your bank account and email us at "+ scholarshipOriginationService.getEmail() +" to confirm that you have received the money.";
 				break;
 			default:
 				statusData.statusMsg = "";
@@ -307,7 +344,7 @@ public class EduProcessingController {
 			}
 		} else {
 			statusData.statusMsg = "No matching application found for this academic year. "
-					+ "Email nsna.edu@achi.org for all of your correspondence.";
+					+ "Email "+ scholarshipOriginationService.getEmail() +" for all of your correspondence.";
 		}
 
 		return statusData;
@@ -320,15 +357,17 @@ public class EduProcessingController {
 	public List<ReviewerProgress> getOverAllProgress(@RequestParam(value="applicationYear", required = false) String applicationYear) {
 
 		if (applicationYear == null || applicationYear.equals("")) {
-			List<EduappConfig> eduappConfigList = eduappConfigRepository.findAll();
+			List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+					scholarshipOriginationService.getScholarshipOriginationRegion());
 			applicationYear = eduappConfigList.get(0).getAppYear();			
 		}
 
 		Query q = em.createNativeQuery("select 'All' reviewer, sum(CASEwhen (isnull(review_complete, 'N') = 'N',1 , 0)) AS \"Assigned_Count\"," //Pending count
 			+ "sum(CASEwhen (review_complete = 'Y',1 , 0))  AS \"Completed_Count\""
-			 + " from EDUAPP_PROCESS_DETAIL "
-			+ " inner join EDUAPPLICATION on EDUAPP_PROCESS_DETAIL.EDUAPP_ID = EDUAPPLICATION.ID "
-			+ "where EDUAPPLICATION.APPLICATION_YEAR = " + applicationYear , ReviewerProgress.class);
+			 + " from EDUAPP_PROCESS_DETAIL A"
+			+ " inner join EDUAPPLICATION B on A.EDUAPP_ID = B.ID "
+			+ "where B.APPLICATION_YEAR = " + applicationYear + " and B.REGION = '"
+			+ scholarshipOriginationService.getScholarshipOriginationRegion() +"'", ReviewerProgress.class);
 		List<ReviewerProgress> results = q.getResultList();
 		return results;
 
@@ -338,14 +377,16 @@ public class EduProcessingController {
 	public List<ReviewerProgress> getReviewerProgress(@RequestParam(value="applicationYear", required = false) String applicationYear) {
 
 		if (applicationYear == null || applicationYear.equals("")) {
-			List<EduappConfig> eduappConfigList = eduappConfigRepository.findAll();
+			List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+					scholarshipOriginationService.getScholarshipOriginationRegion());
 			applicationYear = eduappConfigList.get(0).getAppYear();			
 		}
 		Query q = em.createNativeQuery("select isNull(REVIEWER, '-UnSelected') reviewer, count(*) AS \"Assigned_Count\","
 			+ " sum(CASEwhen (review_complete = 'Y',1 , 0))  AS \"Completed_Count\" "
-			+ " from EDUAPP_PROCESS_DETAIL "
-			+ "inner join EDUAPPLICATION on EDUAPP_PROCESS_DETAIL.EDUAPP_ID = EDUAPPLICATION.ID "
-			+ "where EDUAPPLICATION.APPLICATION_YEAR = " + applicationYear 
+			+ " from EDUAPP_PROCESS_DETAIL A "
+			+ "inner join EDUAPPLICATION B on A.EDUAPP_ID = B.ID "
+			+ "where B.APPLICATION_YEAR = " + applicationYear + " and B.REGION = '"
+			+ scholarshipOriginationService.getScholarshipOriginationRegion() +"'"
 			+ "group by REVIEWER "
 			+ "order by REVIEWER", ReviewerProgress.class);
 		List<ReviewerProgress> results = q.getResultList();
@@ -357,12 +398,14 @@ public class EduProcessingController {
 	public List<CatagoryReportData> getRptCityData(@RequestParam(value="applicationYear", required = false) String applicationYear) {
 
 		if (applicationYear == null || applicationYear.equals("")) {
-			List<EduappConfig> eduappConfigList = eduappConfigRepository.findAll();
+			List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+					scholarshipOriginationService.getScholarshipOriginationRegion());
 			applicationYear = eduappConfigList.get(0).getAppYear();			
 		}
 		
 		Query q = em.createNativeQuery("select top 10 CITY \"catagory\", count(*) as \"count\" from EDUAPPLICATION "
-				+ "where APPLICATION_YEAR = " + applicationYear
+				+ "where APPLICATION_YEAR = " + applicationYear + " and REGION = '"
+				+ scholarshipOriginationService.getScholarshipOriginationRegion() +"'"
 				+ "group by CITY "
 				+ "order by 2 desc, 1", CatagoryReportData.class);
 		List<CatagoryReportData> results = q.getResultList();
@@ -373,12 +416,14 @@ public class EduProcessingController {
 	public List<CatagoryReportData> getRptNativeData(@RequestParam(value="applicationYear", required = false) String applicationYear) {
 
 		if (applicationYear == null || applicationYear.equals("")) {
-			List<EduappConfig> eduappConfigList = eduappConfigRepository.findAll();
+			List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+					scholarshipOriginationService.getScholarshipOriginationRegion());
 			applicationYear = eduappConfigList.get(0).getAppYear();			
 		}
 		
 		Query q = em.createNativeQuery("select top 10 substring(NATIVE_VILLAGE, instr(NATIVE_VILLAGE,'(')) \"catagory\" , count(*) as \"count\" from EDUAPPLICATION "
-				+ "where APPLICATION_YEAR = " + applicationYear
+				+ "where APPLICATION_YEAR = " + applicationYear + " and REGION = '"
+				+ scholarshipOriginationService.getScholarshipOriginationRegion() +"'"
 				+ "group by NATIVE_VILLAGE "
 				+ "order by 2 desc, 1", CatagoryReportData.class);
 		List<CatagoryReportData> results = q.getResultList();
@@ -389,12 +434,14 @@ public class EduProcessingController {
 	public List<CatagoryReportData> getRptInsCityData(@RequestParam(value="applicationYear", required = false) String applicationYear) {
 		
 		if (applicationYear == null || applicationYear.equals("")) {
-			List<EduappConfig> eduappConfigList = eduappConfigRepository.findAll();
+			List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+					scholarshipOriginationService.getScholarshipOriginationRegion());
 			applicationYear = eduappConfigList.get(0).getAppYear();			
 		}
 		
 		Query q = em.createNativeQuery("select top 10 isNull(INSTITUTION_CITY,'unKnown') \"catagory\", count(*) as \"count\" from EDUAPPLICATION "
-				+ "where APPLICATION_YEAR = " + applicationYear
+				+ "where APPLICATION_YEAR = " + applicationYear + " and REGION = '"
+				+ scholarshipOriginationService.getScholarshipOriginationRegion() +"'"
 				+ "group by INSTITUTION_CITY  "
 				+ "order by 2 desc, 1", CatagoryReportData.class);
 		List<CatagoryReportData> results = q.getResultList();
@@ -405,12 +452,14 @@ public class EduProcessingController {
 	public List<CatagoryReportData> getRptDegreeData(@RequestParam(value="applicationYear", required = false) String applicationYear) {
 		
 		if (applicationYear == null || applicationYear.equals("")) {
-			List<EduappConfig> eduappConfigList = eduappConfigRepository.findAll();
+			List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+					scholarshipOriginationService.getScholarshipOriginationRegion());
 			applicationYear = eduappConfigList.get(0).getAppYear();			
 		}
 		
 		Query q = em.createNativeQuery("select top 10 UPPER(replace(LTRIM(RTRIM(DEGREE)), '.')) \"catagory\" , count(*) as \"count\" from EDUAPPLICATION "
-				+ "where APPLICATION_YEAR = " + applicationYear
+				+ "where APPLICATION_YEAR = " + applicationYear + " and REGION = '"
+				+ scholarshipOriginationService.getScholarshipOriginationRegion() +"'"
 				+ "group by UPPER(replace(LTRIM(RTRIM(DEGREE)), '.')) "
 				+ "order by 2 desc, 1", CatagoryReportData.class);
 		List<CatagoryReportData> results = q.getResultList();

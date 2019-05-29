@@ -238,6 +238,7 @@ eduApp.controller('EduAppProcessAppCtrl', function($scope, $http, $window, $stat
 		$scope.appl = data[0];
 		$scope.potentialDup = data[1];
 		$scope.potentialOtherYearApps = data[2];
+		$scope.potentialDupAcrossRegions = data[3];
 	}, function(error){
 		if(error.status === 401 || error.status === 403){
 			$state.go('accessDenied', {}, {location: false});

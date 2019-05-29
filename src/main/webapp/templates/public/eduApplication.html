@@ -2,7 +2,7 @@
 <div class="col-sm-9 text-left">
 	<div class="alert alert-danger" data-ng-show="pageErrMsg">{{pageErrMsg}}</div>
 	<div class="page-header">
-		<h1>NSNA Education Scholarship Application</h1>
+		<h1>{{scholarshipOriginationInfo.scholarshipOriginationLabel}} Education Scholarship Application</h1>
 	</div>
 	<form role="form" class="" name="eduForm">
 		<div class="panel panel-success">
@@ -65,7 +65,11 @@
 					<div class="form-group">
 					<label class="control-label" for="PHOTO">Recent Photo:</label>
 						<p class="help-block small">
-							<i>Disclaimer: Upload a recent passport size photo. Providing photos helps NSNA raise more funds which in turn will make it possible to support more students. It is optional, but if a photo is uploaded you agree that NSNA may use your picture in marketing materials, Facebook posts and fund raising activities.Not uploading a photo will not affect your application eligibility. Your application will be evaluated by the same standards as other applications submitted with a photo. </i>
+							<i>Disclaimer: Upload a recent passport size photo. Providing photos helps {{scholarshipOriginationInfo.scholarshipOriginationLabel}}
+							   raise more funds which in turn will make it possible to support more students. It is optional, but if a photo is uploaded you agree
+							    that {{scholarshipOriginationInfo.scholarshipOriginationLabel}} may use your picture in marketing materials, Facebook posts and 
+							    fund raising activities.Not uploading a photo will not affect your application eligibility. Your application will be evaluated
+							     by the same standards as other applications submitted with a photo. </i>
 						</p>
 
 						<input type="file" data-ngf-select
@@ -725,12 +729,12 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="panel">
-						<h4>Nagarathar Reference in USA</h4>
+						<h4>Nagarathar Reference in {{scholarshipOriginationInfo.scholarshipOriginationRegion}}</h4>
 						<div class="form-group">
 							<label class="control-label" for="referenceName">Name:</label> <input
 								data-ng-model="appl.referenceName" type="text" maxlength="30"
 								class="form-control" id="referenceName"
-								placeholder="US Reference name">
+								placeholder="{{scholarshipOriginationInfo.scholarshipOriginationRegion}} Reference name">
 						</div>
 						<div class="form-group">
 							<label class="control-label" for="referencePhone">Phone
@@ -910,8 +914,8 @@
 					style="color: rgb(0, 0, 0); font-family: Tahoma, Geneva, sans-serif; font-size: 14.9px; line-height: normal; background-color: rgb(252, 246, 232);"><span
 						class="label-field"><strong>I certify that the
 								above information is true. I will abide by all the conditions
-								set forth by the Education Committee of NSNA. I assure to help
-								NSNA Education Committee and Nagarathar Students who are in need
+								set forth by the Education Committee of {{scholarshipOriginationInfo.scholarshipOriginationLabel}}. I assure to help
+								{{scholarshipOriginationInfo.scholarshipOriginationLabel}} Education Committee and Nagarathar Students who are in need
 								of help. </br> By applying for educational assistance, I agree to
 								have the basic application details (Applicant Name, Native
 								Village, Degree and Year) disclosed/displayed as part of
