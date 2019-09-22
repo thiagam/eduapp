@@ -1,0 +1,59 @@
+
+<div class="modal fade" id="{{'myModalAcrossRegions' + dupApplAcrReg.id}}" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<div class="modal-title">
+					<h4 class="text-center">Potential Duplicate Application Comparison Across Regions</h4>
+					<div class=row>
+						<div class="col-sm-6">
+							 <span class="badge">Current Application</span>
+
+							<h4>{{ appl.firstName +' '+ appl.lastName + ' / ' +
+								appl.studentId +' / ' + appl.confirmationNmbr +' / ' +
+								appl.applicationYear| uppercase}}</h4>
+							<p>Region: {{appl.region}}</p>
+							<p>Reviewer: {{appl.eduappProcessDetail.reviewer}}</p>
+							<P>processingStatus:
+								{{appl.eduappProcessDetail.processingStatus}}</P>
+						</div>
+						<div class="col-sm-6">
+							<span class="badge">Potential Duplicate Application Across Regions</span>							
+							<h4>{{ dupApplAcrReg.firstName +' '+ dupApplAcrReg.lastName + ' / ' +
+								dupApplAcrReg.studentId +' / ' + dupApplAcrReg.confirmationNmbr +' / ' +
+								dupApplAcrReg.applicationYear | uppercase }}</h4>
+							<p>Region: {{dupApplAcrReg.region}}</p>
+							<p>Reviewer: {{dupApplAcrReg.eduappProcessDetail.reviewer}}</p>
+							<P>processingStatus:
+								{{dupApplAcrReg.eduappProcessDetail.processingStatus}}</P>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body">
+					<div class="row" >
+						<div class="col-sm-6">
+							<application-display 
+								display-appl = "appl">
+							</application-display>
+						</div>
+
+						<div class="col-sm-6">
+							<application-display 
+								display-appl = "dupApplAcrReg">
+							</application-display>						
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 
+<script> 
+$("#myModalAcrossRegions" + $scope.dupApplAcrReg.id).draggable({ handle: ".modal-header" });
+</script>
+ -->

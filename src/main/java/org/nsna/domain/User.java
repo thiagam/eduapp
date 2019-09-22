@@ -41,6 +41,8 @@ public class User implements java.io.Serializable {
 	private Date endDate;
 	private String resetToken;
 	private Character hidden;
+	private String region;
+
 
 	public User() {
 	}
@@ -50,7 +52,7 @@ public class User implements java.io.Serializable {
 		this.userEmail = userEmail;
 	}
 
-	public User(String userName, String userEmail, String passwordHash, String userRole, String userPhone, Date endDate, Character hidden) {
+	public User(String userName, String userEmail, String passwordHash, String userRole, String userPhone, Date endDate, Character hidden, String region) {
 		this.userName = userName;
 		this.userEmail = userEmail;
 		this.passwordHash = passwordHash;
@@ -58,6 +60,7 @@ public class User implements java.io.Serializable {
 		this.userPhone = userPhone;
 		this.endDate = endDate;
 		this.hidden = hidden;
+		this.region = region;		
 	}
 
 	@Id
@@ -148,6 +151,15 @@ public class User implements java.io.Serializable {
 		this.hidden = hidden;
 	}
 
+	@Column(name = "REGION", length = 10)
+	public String getRegion() {
+		return this.region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+	
 	@Transient
 	  public boolean isAccountNonExpired() {
 		  boolean accountNonExpired = true;

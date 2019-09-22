@@ -38,18 +38,24 @@ public class EduappConfig implements java.io.Serializable {
 	private String environmentText;
 	private String passcodeHash;
 	private Integer defaultAwardAmount;
+	private String region;
+	private String scholarshipAwardNotificationDate;
 
 	public EduappConfig() {
 	}
 
 	public EduappConfig(String appYear, Date appWindowStartDate, Date appWindowEndDate, 
-			String environmentText, String passcodeHash, int defaultAwardAmount) {
+			String environmentText, String passcodeHash, int defaultAwardAmount,
+			String region, String scholarshipAwardNotificationDate) {
+		
 		this.appYear = appYear;
 		this.appWindowStartDate = appWindowStartDate;
 		this.appWindowEndDate = appWindowEndDate;
 		this.environmentText = environmentText;
 		this.passcodeHash = passcodeHash;
 		this.defaultAwardAmount = defaultAwardAmount;
+		this.region = region;
+		this.scholarshipAwardNotificationDate = scholarshipAwardNotificationDate;
 	}
 
 	@Id
@@ -125,6 +131,24 @@ public class EduappConfig implements java.io.Serializable {
 		this.defaultAwardAmount = defaultAwardAmount;
 	}
 
+	@Column(name = "REGION", length = 10)
+	public String getRegion() {
+		return this.region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+	
+	@Column(name = "SCHLRSP_AWARD_NOTIF_DATE", length = 10)
+	public String getScholarshipAwardNotificationDate() {
+		return this.scholarshipAwardNotificationDate;
+	}
+
+	public void setScholarshipAwardNotificationDate(String scholarshipAwardNotificationDate) {
+		this.scholarshipAwardNotificationDate = scholarshipAwardNotificationDate;
+	}
+	
 	@Transient
 	  public boolean getEduappWindow() {
 		 if ((new Date()).compareTo(this.getAppWindowStartDate()) >=0 &&  

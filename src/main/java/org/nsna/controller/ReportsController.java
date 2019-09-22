@@ -24,6 +24,7 @@ import org.nsna.domain.EduappConfigRepository;
 import org.nsna.domain.User;
 import org.nsna.domain.UserRepository;
 import org.nsna.service.AppParameterService;
+import org.nsna.service.ScholarshipOriginationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,6 +50,8 @@ public class ReportsController {
 	private UserRepository userRepository;	
 	@Autowired
 	private EduappConfigRepository eduappConfigRepository;		
+	@Autowired
+	private ScholarshipOriginationService scholarshipOriginationService;
 	
 
 	@RequestMapping(value="/downloadDataAsCSV", method = RequestMethod.GET)
@@ -80,7 +83,8 @@ public class ReportsController {
 			downloadDataAsCSV(response, 
 					"SELECT * FROM EDUAPPLICATION e " +
 					" INNER JOIN EDUAPP_PROCESS_DETAIL ep on e.ID = ep.EDUAPP_ID " +
-					" WHERE APPLICATION_YEAR = " + reportYear,
+					" WHERE APPLICATION_YEAR = " + reportYear+ "AND e.REGION ='" +
+					scholarshipOriginationService.getScholarshipOriginationRegion()+"'",
 					"AppWithReviewerData-"+reportYear);
 		} else {
 			downloadDataAsCSV(response,"SELECT ''","blank");
@@ -147,7 +151,8 @@ public class ReportsController {
 					+ "  from  EDUAPP_PROCESS_DETAIL a "
 					+ " inner join EDUAPPLICATION on a.EDUAPP_ID = EDUAPPLICATION.ID "
 					+ " where EDUAPPLICATION.APPLICATION_YEAR = (select top 1 APP_YEAR from EDUAPP_CONFIG) "
-					+ "   and a.PROCESSING_STATUS = 'ReviewComplete' order by 2 desc",
+					+ "   and a.PROCESSING_STATUS = 'ReviewComplete' order by 2 desc"
+					+ " and a.REGION = '" + scholarshipOriginationService.getScholarshipOriginationRegion() +"'",
 					"HighAwardReview");
 		} else {
 			downloadDataAsCSV(response,"SELECT ''","blank");
@@ -178,6 +183,7 @@ public class ReportsController {
 						"  from  EDUAPP_PROCESS_DETAIL a " + 
 						" inner join EDUAPPLICATION on a.EDUAPP_ID = EDUAPPLICATION.ID " + 
 						" where EDUAPPLICATION.APPLICATION_YEAR = (select top 1 APP_YEAR from EDUAPP_CONFIG) " + 
+						" and EDUAPPLICATION.REGION = '" + scholarshipOriginationService.getScholarshipOriginationRegion() +"'"+ 
 						"   and a.PROCESSING_STATUS = 'Awarded' " + 
 						"    and a.CHECK_NUMBER = '" + awdref + "'" +						
 						" order by 1",
@@ -285,6 +291,7 @@ public class ReportsController {
 				"	  from EDUAPPLICATION  " +
 				"	 inner join EDUAPP_PROCESS_DETAIL a on a.EDUAPP_ID = EDUAPPLICATION.ID " + 
 				"	where EDUAPPLICATION.APPLICATION_YEAR = (select top 1 APP_YEAR from EDUAPP_CONFIG) " + 
+				" and EDUAPPLICATION.REGION = '" + scholarshipOriginationService.getScholarshipOriginationRegion() +"'"+ 
 				"	 and a.PROCESSING_STATUS = 'Awarded' " +
 				"    and a.CHECK_NUMBER = '" + awdref + "'" +
 				"	  and EDUAPPLICATION.BRANCH_IFSC_CODE is not null " + 
@@ -299,9 +306,11 @@ public class ReportsController {
 	private boolean isAuthorizedForReports(Principal principle, String passcode, String passwd) {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-		User loginUser = userRepository.findByUserName(principle.getName());		
+		User loginUser = userRepository.findByUserName(principle.getName(),
+				scholarshipOriginationService.getScholarshipOriginationRegion());		
 		
-		List<EduappConfig> eduappConfigList = eduappConfigRepository.findAll();
+		List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 		String  configPasscodeHash = eduappConfigList.get(0).getPasscodeHash();		
 		
 		// if the provided passcode match config passcode and 
@@ -321,7 +330,8 @@ public class ReportsController {
 	    
 	    ResultSet rs = stat.executeQuery(reportSql);
 	    
- 		String tempFolder = appParameterService.getTempDownloadFolder();
+ 		String tempFolder = appParameterService.getTempDownloadFolder(
+ 				scholarshipOriginationService.getScholarshipOriginationRegion());
  		String outPath = tempFolder + "\\" +filename + "-" + getCurrentDate() + ".csv" ;
 	    //String out = "C:/Users/Somasundaram/gitrepo/NSNAEduApp/NSNAEduApp/test.csv";
         BufferedWriter writer = new BufferedWriter(new FileWriter(outPath));

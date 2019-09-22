@@ -1,7 +1,6 @@
 <!DOCTYPE html> 
 <html lang="en"> 
     <head> 
-        <title>NSNA Education Scholarship Application</title>         
         <meta charset="utf-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1"> 
 		<link rel="shortcut icon" href="/image/achi16.png" type="image/png" />  
@@ -149,11 +148,13 @@
         <nav class="navbar navbar-inverse hidden-print"> 
             <div data-ng-controller="navCtrl as navCtrl" class="container-fluid"> 
                 <div class="navbar-header"> 
+                <li data-ng-show="scholarshipOriginationInfo">
+                 <title>{{scholarshipOriginationInfo.scholarshipOriginationLabel}} Education Scholarship Application</title>         
+                   </li>
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar"> 
                         <span class="icon-bar"></span> 
                     </button>                     
-                     <img src="image/logo.png" class="img-rounded" href="#" /> 
-
+                      <img ng-src="image/{{scholarshipOriginationInfo.scholarshipOriginationLabel}}logo.jpg" class="img-rounded" href="#" />  
                     <!--<a class="navbar-brand" href="#">Logo</a>-->                     
                 </div>                 
                 <div class="collapse navbar-collapse" id="myNavbar"> 
@@ -178,7 +179,7 @@
                         <li data-ng-show="authenticated"><a href="" data-ng-click="navCtrl.logout()">logout</a></li>
                     </ul>                     
                 </div>      
-                <h2 style="color:rgb(255, 255, 255);">NSNA Education Portal</h2>            
+                <li data-ng-show="scholarshipOriginationInfo"><h2 style="color:rgb(255, 255, 255);"> {{scholarshipOriginationInfo.scholarshipOriginationLabel}} Education Portal </h2>  </li>         
             </div>             
         </nav>   
         
@@ -204,7 +205,7 @@
         </div>          
          
         <footer class="container-fluid text-center hidden-print"> 
-			© All Rights Reserved Nagarathar Sangam of North America  (Ver:1.5.1)
+			© All Rights Reserved Nagarathar Sangam of {{scholarshipOriginationInfo.scholarshipOriginationRegion}}
         </footer>       
        
     </body>     
